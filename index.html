@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b18">
+<title>FotoPrompt Studio | Prompts Fotográficos Profesionales</title>
+<meta name="description" content="Biblioteca de 1000 prompts fotográficos profesionales y 100 estilos creativos para transformar tus fotografías con inteligencia artificial.">
+<style>
+:root{--bg:#090b18;--panel:#12162a;--panel2:#191e37;--purple:#a855f7;--cyan:#22d3ee;--text:#f2f4ff;--muted:#a4accb;--border:#303654}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at top,#19163a 0,#090b18 48%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.6}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+header{padding:38px 18px 25px;text-align:center;border-bottom:1px solid var(--border);background:#0a0c1be8}
+.logo{font-size:clamp(28px,5vw,48px);font-weight:900;letter-spacing:-1.5px;margin:0}
+.logo span{color:var(--cyan)}
+header p{color:var(--muted);max-width:720px;margin:8px auto 20px}
+nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{background:linear-gradient(110deg,#7c3aed,#4f46e5);color:white;border:0;border-radius:10px;padding:10px 15px;font-weight:700;transition:.2s}
+.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.btn.secondary{background:#202642;border:1px solid #414b70}
+.btn.cyan{background:linear-gradient(110deg,#0891b2,#2563eb)}
+.container{max-width:1250px;padding:24px 16px;margin:auto}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:25px}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.stat strong{display:block;font-size:clamp(23px,4vw,34px);color:var(--cyan)}
+.stat span{font-size:13px;color:var(--muted)}
+h2{font-size:clamp(23px,3vw,31px);line-height:1.25;margin:0 0 10px}
+h3{line-height:1.3}
+.section-intro{color:var(--muted);margin:0 0 20px}
+.panel{background:linear-gradient(145deg,#14192d,#101426);border:1px solid var(--border);border-radius:17px;padding:22px;margin-bottom:28px}
+.controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin-bottom:17px}
+input,select,textarea{width:100%;min-width:0;background:#0b1021;border:1px solid #343c60;border-radius:9px;padding:12px;color:var(--text);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--cyan)}
+.categories{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+.chip{border:1px solid #394260;border-radius:30px;background:#141a30;color:#d7dcf5;padding:7px 12px;font-size:13px}
+.chip.active{background:#5b21b6;border-color:#a855f7;color:white}
+.results-line{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:14px;margin:15px 0}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.prompt-card{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:17px;min-width:0}
+.prompt-card h3{font-size:16px;margin:0 0 9px}
+.tag{display:inline-block;font-size:11px;color:#c4b5fd;background:#2a2048;border:1px solid #49346c;border-radius:20px;padding:3px 9px;margin-bottom:9px}
+.prompt-text{font-size:14px;color:#d0d6ef;white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 13px}
+.card-actions{display:flex;gap:8px;flex-wrap:wrap}
+.card-actions button{font-size:12px;padding:7px 10px}
+.hidden-text{filter:blur(5px);user-select:none}
+.empty{text-align:center;color:var(--muted);padding:30px}
+#moreBtn{display:block;margin:22px auto}
+.transform-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field label{display:block;font-size:13px;color:#c6cbe1;margin:0 0 6px}
+.field.full{grid-column:1/-1}
+.checks{display:flex;gap:17px;flex-wrap:wrap;margin:17px 0}
+.checks label{display:flex;gap:8px;align-items:center;font-size:14px}
+.checks input{width:auto;accent-color:var(--purple)}
+#output{min-height:190px;margin-top:12px}
+.notice{font-size:12px;color:var(--muted);margin-top:12px}
+footer{text-align:center;border-top:1px solid var(--border);padding:25px;color:var(--muted);font-size:13px}
+@media(max-width:700px){.controls,.cards,.transform-grid{grid-template-columns:1fr}.stats{gap:7px}.stat{padding:12px 5px}.panel{padding:16px}.container{padding:17px 12px}.field.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<header>
+  <h1 class="logo">FOTO<span>PROMPT</span> STUDIO</h1>
+  <p>Tu laboratorio creativo de fotografía con inteligencia artificial. Descubre prompts, explora estilos y crea instrucciones fotográficas profesionales.</p>
+  <nav>
+    <a href="#biblioteca"><button class="btn">Biblioteca de prompts</button></a>
+    <a href="#transformador"><button class="btn secondary">Transforma tu foto</button></a>
+  </nav>
+</header>
+
+<main class="container">
+  <div class="stats">
+    <div class="stat"><strong id="totalStat">1000</strong><span>Prompts fotográficos</span></div>
+    <div class="stat"><strong id="categoryStat">25</strong><span>Categorías creativas</span></div>
+    <div class="stat"><strong>100</strong><span>Estilos profesionales</span></div>
+  </div>
+
+  <section id="biblioteca" class="panel">
+    <h2>Biblioteca fotográfica</h2>
+    <p class="section-intro">Explora mil instrucciones fotográficas, encuentra inspiración y copia el texto para utilizarlo en tu herramienta de inteligencia artificial favorita.</p>
+    <div class="controls">
+      <input id="search" type="search" placeholder="Buscar retratos, iluminación, paisajes..." aria-label="Buscar prompts">
+      <select id="categoryFilter" aria-label="Filtrar categoría"><option value="">Todas las categorías</option></select>
+      <select id="sort" aria-label="Ordenar resultados">
+        <option value="categoryAsc">Categoría A–Z</option>
+        <option value="categoryDesc">Categoría Z–A</option>
+        <option value="titleAsc">Título A–Z</option>
+        <option value="titleDesc">Título Z–A</option>
+      </select>
+    </div>
+    <div id="chips" class="categories"></div>
+    <div class="results-line"><span id="resultCount">Preparando biblioteca...</span><button class="btn secondary" id="exportBtn">Exportar TXT</button></div>
+    <div id="cards" class="cards"></div>
+    <button class="btn" id="moreBtn">Cargar 30 prompts más</button>
+  </section>
+
+  <section id="transformador" class="panel">
+    <h2>Transforma tu foto</h2>
+    <p class="section-intro">Combina un estilo profesional con un fondo, una iluminación, un vestuario y un acabado. Obtendrás un prompt personalizado para utilizar junto a tu fotografía en una herramienta de IA compatible con imágenes.</p>
+    <div class="transform-grid">
+      <div class="field"><label for="proStyle">Estilo profesional</label><select id="proStyle"></select></div>
+      <div class="field"><label for="transformation">Tipo de transformación</label><select id="transformation">
+        <option>Retrato fotográfico profesional</option><option>Editorial de moda</option><option>Fotografía cinematográfica</option><option>Retrato corporativo</option><option>Campaña publicitaria</option><option>Retrato artístico</option><option>Fotografía de belleza</option><option>Fotografía documental</option><option>Retrato fantástico realista</option><option>Fotografía para redes sociales</option><option>Retrato de lujo</option><option>Fotografía de portada</option>
+      </select></div>
+      <div class="field"><label for="background">Fondo</label><select id="background">
+        <option>Estudio profesional minimalista</option><option>Ciudad moderna de noche</option><option>Jardín natural al amanecer</option><option>Playa al atardecer</option><option>Interior de lujo</option><option>Fondo negro de estudio</option><option>Fondo blanco editorial</option><option>Arquitectura brutalista</option><option>Calle histórica europea</option><option>Paisaje montañoso</option><option>Estudio de color vibrante</option><option>Fondo original de la fotografía</option><option>Escenario cinematográfico realista</option>
+      </select></div>
+      <div class="field"><label for="lighting">Iluminación</label><select id="lighting">
+        <option>Luz suave de ventana</option><option>Iluminación Rembrandt</option><option>Luz cinematográfica lateral</option><option>Contraluz dorado</option><option>Flash editorial directo</option><option>Luz difusa de estudio</option><option>Iluminación de neón azul y violeta</option><option>Luz natural nublada</option><option>Claroscuro dramático</option><option>Iluminación beauty de alta calidad</option><option>Golden hour</option><option>Iluminación de tres puntos</option>
+      </select></div>
+      <div class="field"><label for="clothing">Vestuario</label><select id="clothing">
+        <option>Elegante y atemporal</option><option>Alta costura contemporánea</option><option>Traje ejecutivo moderno</option><option>Estilo casual premium</option><option>Moda urbana sofisticada</option><option>Vestuario monocromático</option><option>Diseño futurista realista</option><option>Vestido editorial de lujo</option><option>Ropa deportiva técnica</option><option>Vestuario vintage auténtico</option><option>Conservar el vestuario original</option>
+      </select></div>
+      <div class="field"><label for="color">Color y acabado</label><select id="color">
+        <option>Colores naturales y piel realista</option><option>Grado cinematográfico teal y naranja</option><option>Blanco y negro fine art</option><option>Paleta pastel delicada</option><option>Colores intensos de campaña</option><option>Tonos cálidos analógicos</option><option>Colores fríos minimalistas</option><option>Contraste editorial elegante</option><option>Aspecto de película de 35 mm</option><option>Paleta desaturada documental</option><option>Acabado de lujo limpio</option>
+      </select></div>
+      <div class="field"><label for="framing">Encuadre</label><select id="framing">
+        <option>Primer plano con ojos nítidos</option><option>Plano medio editorial</option><option>Retrato de cuerpo entero</option><option>Plano americano</option><option>Primerísimo primer plano</option><option>Composición ambiental amplia</option><option>Composición simétrica</option><option>Encuadre vertical 4:5</option><option>Encuadre vertical 9:16</option><option>Encuadre horizontal 16:9</option>
+      </select></div>
+      <div class="field"><label for="lens">Objetivo y profundidad</label><select id="lens">
+        <option>85 mm, profundidad de campo reducida</option><option>50 mm, perspectiva natural</option><option>35 mm, retrato ambiental</option><option>105 mm macro para detalles</option><option>24 mm, perspectiva amplia controlada</option><option>70-200 mm, compresión de perspectiva</option><option>Óptica cinematográfica de 50 mm</option><option>Enfoque profundo y detalle ambiental</option>
+      </select></div>
+      <div class="field full"><label for="details">Detalles adicionales (opcional)</label><input id="details" maxlength="500" placeholder="Ej.: gotas de lluvia, reflejos en el cristal, expresión serena..."></div>
+    </div>
+    <div class="checks">
+      <label><input id="identity" type="checkbox" checked> Conservar identidad y rasgos faciales</label>
+      <label><input id="realism" type="checkbox" checked> Priorizar realismo fotográfico</label>
+      <label><input id="skin" type="checkbox" checked> Mantener textura natural de la piel</label>
+      <label><input id="hands" type="checkbox" checked> Cuidar anatomía y manos</label>
+    </div>
+    <div class="card-actions">
+      <button class="btn" id="generateBtn">Generar prompt profesional</button>
+      <button class="btn secondary" id="copyOutput">Copiar prompt</button>
+      <button class="btn secondary" id="clearOutput">Restablecer texto</button>
+    </div>
+    <textarea id="output" aria-label="Prompt generado" placeholder="Tu prompt personalizado aparecerá aquí..." spellcheck="false"></textarea>
+    <p class="notice">Esta página genera texto, no edita directamente los archivos de imagen. Sube tu foto a una herramienta de IA que admita edición de imágenes y pega allí el prompt. Respeta siempre el consentimiento y los derechos de las personas fotografiadas.</p>
+  </section>
+</main>
+
+<footer>FotoPrompt Studio · Biblioteca creativa de fotografía · Diseñado para GitHub Pages</footer>
+
+<script>
+"use strict";
+
+/* 25 categorías con 10 ideas originales en cada una. */
+const catalog = [
+["Retrato profesional",["Retrato ejecutivo con expresión segura","Retrato natural junto a una ventana","Primer plano con mirada directa","Retrato profesional de perfil","Retrato espontáneo en el estudio","Retrato editorial con fondo neutro","Retrato ambiental en oficina moderna","Retrato de artista en su taller","Retrato de emprendedor en su espacio","Retrato profesional con composición minimalista"]],
+["Moda editorial",["Editorial de moda en arquitectura geométrica","Silueta de alta costura en movimiento","Editorial monocromático de diseñador","Moda urbana bajo lluvia ligera","Editorial con telas de gran volumen","Campaña de moda en escalera monumental","Retrato de moda con sombras geométricas","Editorial minimalista con líneas limpias","Moda contemporánea en espacio industrial","Editorial de moda con viento natural"]],
+["Belleza y cosmética",["Retrato beauty con maquillaje luminoso","Primer plano de labios con acabado satinado","Fotografía de cosmética sobre superficie reflectante","Belleza editorial con sombras suaves","Campaña de cuidado facial con agua","Detalle de maquillaje artístico","Retrato beauty de piel natural","Fotografía de perfume con luz lateral","Campaña de cosmética con pétalos frescos","Belleza de estudio con fondo cromático"]],
+["Fotografía de producto",["Producto tecnológico sobre pedestal","Reloj de lujo con reflejos controlados","Frasco de perfume con iluminación de contorno","Auriculares sobre superficie minimalista","Producto de cristal con refracción de luz","Cámara fotográfica en bodegón técnico","Bolso de diseñador en fondo neutro","Zapatillas deportivas en composición dinámica","Botella premium con gotas de condensación","Objeto de diseño sobre fondo infinito"]],
+["Publicidad comercial",["Campaña publicitaria con producto protagonista","Anuncio de bebida con salpicadura congelada","Campaña de marca con composición atrevida","Fotografía publicitaria con sombras definidas","Producto cotidiano convertido en objeto premium","Anuncio de tecnología con iluminación futurista","Campaña de lujo con espacio negativo","Publicidad de alimentos con colores apetitosos","Campaña comercial con perspectiva cenital","Fotografía publicitaria con composición diagonal"]],
+["Paisajes naturales",["Montañas reflejadas en lago alpino","Valle cubierto por niebla matinal","Costa rocosa con oleaje de larga exposición","Bosque húmedo con rayos de sol","Desierto con dunas y sombras alargadas","Pradera silvestre al amanecer","Acantilados bajo cielo tormentoso","Cascada en bosque tropical","Lago glaciar de color turquesa","Colinas onduladas en hora dorada"]],
+["Naturaleza y fauna",["Ave en vuelo con alas perfectamente definidas","Zorro en su hábitat al amanecer","Ciervo entre árboles cubiertos de niebla","Mariposa sobre flor silvestre","Caballo galopando en pradera abierta","Lobo fotografiado a distancia respetuosa","Abeja recogiendo polen en macro","Aves marinas junto a la costa","Ardilla entre ramas otoñales","Elefantes en paisaje de sabana"]],
+["Fotografía macro",["Textura microscópica de una hoja","Gota de agua con reflejo invertido","Ojo de insecto con detalle extremo","Cristales de hielo sobre una superficie","Polen sobre pétalos iluminados","Superficie metálica con microarañazos","Semilla con textura orgánica","Ala de mariposa con escamas detalladas","Gota suspendida sobre una flor","Patrones geométricos de un mineral"]],
+["Calle y documental",["Escena urbana espontánea bajo la lluvia","Vendedor preparando su puesto al amanecer","Cruce peatonal en hora punta","Ciclista pasando junto a escaparates","Retrato documental en mercado tradicional","Sombras de peatones sobre una plaza","Callejón con ropa tendida","Escena cotidiana en una estación","Trabajador artesanal concentrado en su oficio","Vida urbana capturada desde una esquina"]],
+["Arquitectura",["Fachada modernista con detalle ornamental","Edificio contemporáneo de líneas puras","Interior minimalista con luz rasante","Escalera helicoidal desde un ángulo elevado","Pasillo arquitectónico con perspectiva central","Fachada de hormigón con sombras marcadas","Edificio histórico bajo luz de tarde","Atrio con geometría simétrica","Puerta antigua con textura desgastada","Torre moderna contra un cielo despejado"]],
+["Viajes y culturas",["Mercado local lleno de texturas y colores","Plaza histórica al amanecer","Puerto pesquero con barcos tradicionales","Calle empedrada de un pueblo costero","Estación ferroviaria de una ciudad antigua","Taller artesanal durante el trabajo","Terraza urbana con vistas panorámicas","Festival cultural con ambiente auténtico","Paisaje rural con arquitectura tradicional","Calle de montaña con comercios locales"]],
+["Gastronomía",["Plato de autor con emplatado minimalista","Pan artesanal recién horneado","Café con arte latte y luz de ventana","Postre de chocolate con textura brillante","Frutas frescas en composición cenital","Pasta artesanal en cocina rústica","Cóctel sin alcohol con hielo transparente","Tabla de quesos con ingredientes naturales","Sopa caliente con vapor visible","Repostería fina con decoración precisa"]],
+["Bebidas y cafetería",["Taza de café sobre mesa de mármol","Té servido en recipiente de cerámica","Bebida fría con condensación y hielo","Espresso en barra de cafetería","Tetera con vapor contra fondo oscuro","Batido de frutas con color natural","Botella de agua con reflejos limpios","Chocolate caliente con espuma delicada","Café filtrado junto a utensilios artesanales","Bebida cítrica con rodajas frescas"]],
+["Deporte y acción",["Corredor en plena zancada","Ciclista tomando una curva","Jugador de baloncesto durante un salto","Nadador entrando en el agua","Tenista golpeando una pelota","Patinador urbano en movimiento","Escalador sobre pared rocosa","Futbolista durante un cambio de dirección","Atleta entrenando con pesas","Surfista sobre una ola en movimiento"]],
+["Fitness y bienestar",["Retrato deportivo en gimnasio moderno","Sesión de estiramiento junto a ventana","Entrenamiento funcional con luz lateral","Yoga sobre una superficie natural","Corredor preparándose antes de entrenar","Retrato de entrenador personal","Detalle de manos sujetando pesas","Sesión de pilates en estudio luminoso","Atleta descansando después del esfuerzo","Fotografía editorial de ropa deportiva"]],
+["Bodas y celebraciones",["Pareja caminando bajo luz dorada","Anillos sobre una tela delicada","Ramo de flores con luz natural","Brindis capturado en un instante","Retrato espontáneo de pareja","Decoración de mesa de celebración","Vestido de ceremonia con movimiento","Entrada a una celebración al aire libre","Detalle de invitaciones y papelería","Retrato íntimo junto a una ventana"]],
+["Familia e infancia",["Retrato familiar en un parque","Niño jugando con burbujas","Hermanos riendo en casa","Manos de una familia unidas","Retrato infantil con luz suave","Juego espontáneo en jardín","Familia caminando por la playa","Padres leyendo un cuento con su hijo","Abuelos compartiendo una conversación","Retrato familiar con fondo sencillo"]],
+["Mascotas",["Perro mirando a cámara en parque","Gato descansando junto a una ventana","Retrato de mascota sobre fondo neutro","Perro corriendo por un campo","Gato con iluminación lateral suave","Primer plano de ojos de un perro","Mascota envuelta en una manta","Perro junto a su persona en exterior","Gato explorando una caja de cartón","Retrato de mascota con fondo oscuro"]],
+["Blanco y negro",["Retrato dramático en blanco y negro","Arquitectura con contraste tonal","Escena callejera con sombras profundas","Manos de artesano con textura visible","Retrato clásico con luz lateral","Paisaje minimalista monocromático","Retrato de perfil sobre fondo negro","Escena urbana con lluvia y reflejos","Bodegón de objetos antiguos","Fotografía documental con grano fino"]],
+["Cine y narrativa",["Retrato nocturno de personaje solitario","Escena bajo un neón en una calle mojada","Interior con luz entrando por persianas","Figura en una estación casi vacía","Retrato con atmósfera de misterio","Escena de carretera al anochecer","Personaje junto a una ventana lluviosa","Composición de suspense con espacio negativo","Escena nostálgica con luz de tungsteno","Retrato narrativo en un hotel antiguo"]],
+["Fotografía nocturna",["Horizonte urbano durante la hora azul","Estelas luminosas en avenida nocturna","Cielo estrellado sobre montañas","Puente iluminado reflejado en el agua","Retrato con iluminación de escaparates","Arquitectura bajo iluminación nocturna","Puerto con luces reflejadas","Calle nocturna con niebla ligera","Luna sobre paisaje costero","Observatorio bajo cielo despejado"]],
+["Astronomía y espacio",["Vía Láctea sobre un paisaje desértico","Rastros estelares sobre montañas","Luna con relieve y cráteres visibles","Eclipse solar con exposición controlada","Nebulosa de colores en composición científica artística","Observación del cielo desde una colina","Cielo nocturno sobre un lago tranquilo","Estrellas reflejadas en agua inmóvil","Paisaje lunar de estética documental","Composición espacial inspirada en ciencia ficción"]],
+["Fotografía aérea",["Costa vista desde gran altura","Campos agrícolas con patrones geométricos","Río serpenteante entre bosques","Carretera atravesando un paisaje montañoso","Isla rodeada de aguas turquesas","Dunas con líneas creadas por el viento","Tejados históricos desde perspectiva elevada","Salinas con bloques de colores naturales","Bosque con senderos desde arriba","Acantilados y espuma marina desde el aire"]],
+["Bodegón y arte",["Bodegón clásico con frutas maduras","Flores secas en recipiente cerámico","Composición de libros y objetos antiguos","Escultura abstracta sobre pedestal","Objetos metálicos con reflejos estudiados","Flores frescas en jarrón de cristal","Bodegón minimalista de formas geométricas","Composición de telas y materiales naturales","Objetos cotidianos con sombras artísticas","Naturaleza muerta inspirada en pintura clásica"]],
+["Tecnología y futurismo",["Dispositivo futurista sobre superficie negra","Retrato con reflejos de pantallas","Laboratorio tecnológico con luz azul","Objeto de diseño con líneas luminosas","Producto digital en escenario minimalista","Estudio con interfaces holográficas ficticias","Vehículo eléctrico en entorno arquitectónico","Retrato editorial con neones violetas","Robot de diseño industrial fotografiado como producto","Instalación tecnológica con geometría luminosa"]]
+];
+
+/* Cuatro direcciones fotográficas para cada idea: 250 × 4 = 1000. */
+const directions=[
+{n:"Luz natural",t:"Iluminación natural cuidadosamente modelada, transiciones tonales suaves y colores fieles.",c:"Composición equilibrada con profundidad espacial natural.",q:"nitidez selectiva, detalle auténtico y exposición precisa"},
+{n:"Editorial cinematográfica",t:"Luz lateral cinematográfica, sombras con detalle y contraste tonal controlado.",c:"Composición narrativa con capas visuales y espacio negativo intencionado.",q:"texturas ricas, foco preciso y gradación de color profesional"},
+{n:"Estudio de alta gama",t:"Esquema de iluminación de estudio con luz principal, relleno sutil y separación del fondo.",c:"Composición refinada, geometría limpia y atención al sujeto principal.",q:"acabado comercial pulido, detalle fino y rango dinámico amplio"},
+{n:"Arte experimental",t:"Iluminación expresiva con sombras gráficas, reflejos seleccionados y contraste creativo.",c:"Composición asimétrica deliberada, ritmo visual y perspectiva expresiva.",q:"textura definida, intención artística y acabado de autor"}
+];
+
+const allPrompts=[];
+catalog.forEach((cat,ci)=>{
+  cat[1].forEach((subject,si)=>{
+    directions.forEach((d,di)=>{
+      const number=allPrompts.length+1;
+      allPrompts.push({
+        id:number,category:cat[0],
+        title:subject+" — "+d.n,
+        text:"Crea una fotografía profesional de "+subject.toLowerCase()+". Dirección visual: "+d.n+". "+d.t+" "+d.c+" Utiliza una óptica apropiada para el sujeto, perspectiva coherente, exposición equilibrada y separación visual clara. "+d.q+". Respeta la física de la luz, evita artefactos, halos artificiales, texturas plásticas y elementos deformados. Calidad editorial profesional, resultado visual intencionado y atención minuciosa a los detalles.",
+        key:ci+"-"+si+"-"+di
+      });
+    });
+  });
+});
+
+const styleGroups=[
+["Retrato y personalidad",[
+"Retrato editorial clásico","Retrato psicológico introspectivo","Retrato ambiental documental","Retrato corporativo de lujo","Retrato de perfil escultórico","Retrato con luz Rembrandt","Retrato de contraluz suave","Retrato íntimo junto a ventana","Retrato con sombras geométricas","Retrato de autor minimalista","Retrato en clave baja","Retrato en clave alta","Retrato con luz envolvente","Retrato con fondo infinito","Retrato de mirada cinematográfica","Retrato espontáneo lifestyle","Retrato de carácter analógico","Retrato de estética fine art","Retrato con perspectiva ambiental","Retrato editorial monocromático"]],
+["Moda y belleza",[
+"Alta costura escultórica","Editorial de moda parisino","Moda urbana premium","Belleza natural sin retoque excesivo","Beauty de campaña cosmética","Editorial de maquillaje gráfico","Moda minimalista japonesa","Editorial de sastrería contemporánea","Moda con telas en movimiento","Editorial de joyería de lujo","Belleza con reflejos húmedos","Moda monocromática sofisticada","Editorial de silueta dramática","Moda inspirada en los años noventa","Belleza con luz difusa","Campaña de perfume cinematográfica","Editorial de accesorios premium","Moda arquitectónica conceptual","Retrato de belleza iridiscente","Moda deportiva de alto rendimiento"]],
+["Cine y atmósfera",[
+"Drama cinematográfico naturalista","Suspense urbano nocturno","Noir contemporáneo","Melancolía de hora azul","Cine romántico de luz cálida","Thriller de sombras duras","Cine independiente analógico","Drama de interior con ventana","Cine de carretera contemplativo","Neón urbano realista","Nostalgia de película de 35 mm","Cine de invierno desaturado","Narrativa de luz y niebla","Atmósfera de hotel clásico","Cine de amanecer silencioso","Composición de personaje solitario","Cinematografía de contraste suave","Relato visual de lluvia","Cine de tungsteno vintage","Narrativa visual de gran angular"]],
+["Publicidad y dirección artística",[
+"Campaña de lujo minimalista","Publicidad de producto flotante","Bodegón comercial de alto contraste","Campaña tecnológica futurista","Publicidad cosmética de luz suave","Producto sobre fondo cromático","Campaña premium de bebida","Fotografía de alimentos editorial","Anuncio de diseño industrial","Campaña de moda con espacio negativo","Publicidad con reflejos controlados","Bodegón geométrico contemporáneo","Campaña de joyería macro","Fotografía comercial de cristal","Producto con luz de contorno","Dirección artística brutalista","Publicidad de estilo escandinavo","Campaña de color saturado","Fotografía de marca sostenible","Bodegón publicitario escultórico"]],
+["Técnica avanzada y arte",[
+"Fine art de textura profunda","Blanco y negro de gran riqueza tonal","Macro de detalle extremo","Larga exposición minimalista","Fotografía infrarroja simulada","Doble exposición conceptual","Perspectiva arquitectónica corregida","Luz de contorno multifuente","Bokeh óptico natural","Profundidad de campo extendida","Fotografía de reflejos especulares","Composición simétrica precisa","Perspectiva cenital gráfica","Minimalismo de espacio negativo","Colorimetría cinematográfica teal","Paleta analógica de tonos cálidos","Fotografía de niebla volumétrica","Movimiento congelado de alta velocidad","Luz rasante para texturas","Composición abstracta geométrica"]]
+];
+
+const professionalStyles=[];
+styleGroups.forEach(([group,names])=>names.forEach((name,i)=>professionalStyles.push({
+name,group,
+description:"Aplica una dirección de "+name.toLowerCase()+", con composición intencional, iluminación coherente, control del contraste y acabado profesional. Prioriza la lectura visual del sujeto, la separación entre planos y una estética consistente."
+})));
+
+const $=id=>document.getElementById(id);
+let activeCategory="";
+let visibleCount=30;
+const hiddenPrompts=new Set();
+
+function escapeHTML(s){
+ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function fillSelects(){
+ [...new Set(allPrompts.map(p=>p.category))].forEach(cat=>{
+  const op=document.createElement("option");op.value=cat;op.textContent=cat;$("categoryFilter").appendChild(op);
+ });
+ professionalStyles.forEach((s,i)=>{
+  const op=document.createElement("option");op.value=String(i);op.textContent=(String(i+1).padStart(2,"0"))+" · "+s.name;$("proStyle").appendChild(op);
+ });
+ $("totalStat").textContent=allPrompts.length.toLocaleString("es-ES");
+ $("categoryStat").textContent=catalog.length;
+ const chips=$("chips");
+ const all=document.createElement("button");all.className="chip active";all.textContent="Todas";all.dataset.cat="";chips.appendChild(all);
+ catalog.forEach(cat=>{
+  const b=document.createElement("button");b.className="chip";b.textContent=cat[0];b.dataset.cat=cat[0];chips.appendChild(b);
+ });
+ chips.addEventListener("click",e=>{
+  const b=e.target.closest("button[data-cat]");if(!b)return;
+  activeCategory=b.dataset.cat;$("categoryFilter").value=activeCategory;visibleCount=30;render();
+ });
+}
+function getFiltered(){
+ const query=$("search").value.trim().toLocaleLowerCase("es");
+ const category=$("categoryFilter").value;
+ let items=allPrompts.filter(p=>
+  (!category||p.category===category)&&
+  (!activeCategory||p.category===activeCategory)&&
+  (!query||(p.title+" "+p.category+" "+p.text).toLocaleLowerCase("es").includes(query))
+ );
+ const sort=$("sort").value;
+ items.sort((a,b)=>{
+  if(sort==="categoryAsc")return a.category.localeCompare(b.category,"es")||a.title.localeCompare(b.title,"es");
+  if(sort==="categoryDesc")return b.category.localeCompare(a.category,"es")||a.title.localeCompare(b.title,"es");
+  if(sort==="titleDesc")return b.title.localeCompare(a.title,"es");
+  return a.title.localeCompare(b.title,"es");
+ });
+ return items;
+}
+function render(){
+ const items=getFiltered();
+ const shown=items.slice(0,visibleCount);
+ $("resultCount").textContent=`Mostrando ${shown.length} de ${items.length} resultados · ${allPrompts.length} prompts en total`;
+ $("cards").innerHTML=shown.map(p=>`
+ <article class="prompt-card">
+  <span class="tag">${escapeHTML(p.category)}</span>
+  <h3>${String(p.id).padStart(4,"0")} · ${escapeHTML(p.title)}</h3>
+  <p class="prompt-text ${hiddenPrompts.has(p.id)?"hidden-text":""}">${escapeHTML(p.text)}</p>
+  <div class="card-actions">
+   <button class="btn copy-btn" data-id="${p.id}">Copiar prompt</button>
+   <button class="btn secondary toggle-btn" data-id="${p.id}">${hiddenPrompts.has(p.id)?"Mostrar":"Ocultar"}</button>
+  </div>
+ </article>`).join("");
+ $("moreBtn").style.display=visibleCount<items.length?"block":"none";
+ $("chips").querySelectorAll(".chip").forEach(b=>{
+  b.classList.toggle("active",b.dataset.cat===activeCategory);
+ });
+}
+async function copyText(text,button){
+ try{
+  await navigator.clipboard.writeText(text);
+  const old=button.textContent;button.textContent="¡Copiado!";
+  setTimeout(()=>button.textContent=old,1300);
+ }catch(e){
+  const area=document.createElement("textarea");area.value=text;
+  area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();
+  try{document.execCommand("copy");button.textContent="¡Copiado!";setTimeout(()=>button.textContent="Copiar prompt",1300);}
+  catch(err){alert("No se pudo copiar automáticamente. Selecciona y copia el texto manualmente.");}
+  area.remove();
+ }
+}
+$("cards").addEventListener("click",e=>{
+ const copy=e.target.closest(".copy-btn");
+ if(copy){const p=allPrompts.find(x=>x.id===Number(copy.dataset.id));if(p)copyText(p.text,copy);return;}
+ const toggle=e.target.closest(".toggle-btn");
+ if(toggle){
+  const id=Number(toggle.dataset.id);
+  hiddenPrompts.has(id)?hiddenPrompts.delete(id):hiddenPrompts.add(id);
+  render();
+ }
+});
+$("search").addEventListener("input",()=>{visibleCount=30;render();});
+$("categoryFilter").addEventListener("change",()=>{
+ activeCategory=$("categoryFilter").value;visibleCount=30;render();
+});
+$("sort").addEventListener("change",()=>{visibleCount=30;render();});
+$("moreBtn").addEventListener("click",()=>{visibleCount+=30;render();});
+$("exportBtn").addEventListener("click",()=>{
+ const items=getFiltered();
+ if(!items.length){alert("No hay prompts para exportar con los filtros actuales.");return;}
+ const content="FOTOPROMPT STUDIO — EXPORTACIÓN DE PROMPTS\nTotal: "+items.length+"\n\n"+
+ items.map(p=>`#${p.id} | ${p.category}\n${p.title}\n\n${p.text}\n\n${"=".repeat(60)}\n`).join("\n");
+ const blob=new Blob(["\ufeff"+content],{type:"text/plain;charset=utf-8"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");a.href=url;a.download="fotoprompt-studio-prompts.txt";a.click();
+ URL.revokeObjectURL(url);
+});
+
+function generatePrompt(){
+ const style=professionalStyles[Number($("proStyle").value)]||professionalStyles[0];
+ const parts=[
+  "INSTRUCCIÓN FOTOGRÁFICA PROFESIONAL",
+  "Transformación solicitada: "+$("transformation").value+".",
+  "Dirección artística: "+style.name+".",
+  style.description,
+  "Fondo y entorno: "+$("background").value+".",
+  "Iluminación: "+$("lighting").value+".",
+  "Vestuario: "+$("clothing").value+".",
+  "Color y acabado: "+$("color").value+".",
+  "Encuadre: "+$("framing").value+".",
+  "Óptica y profundidad: "+$("lens").value+"."
+ ];
+ const details=$("details").value.trim();
+ if(details)parts.push("Detalles adicionales: "+details+".");
+ if($("identity").checked)parts.push("Conservar la identidad de la persona de referencia: rasgos faciales, estructura del rostro, edad aparente y características distintivas. No sustituir su identidad ni inventar rasgos.");
+ if($("realism").checked)parts.push("Priorizar realismo fotográfico, anatomía plausible, perspectiva coherente, iluminación físicamente creíble y texturas naturales. Evitar aspecto artificial o de ilustración.");
+ if($("skin").checked)parts.push("Conservar la textura auténtica de la piel, poros y pequeñas irregularidades naturales. Evitar el suavizado excesivo, la piel plástica y los retoques irreales.");
+ if($("hands").checked)parts.push("Mantener anatomía humana coherente, manos proporcionadas, dedos correctamente formados y articulaciones naturales.");
+ parts.push("Calidad final: fotografía de acabado profesional, foco donde corresponda, rango dinámico equilibrado, detalle fino, composición intencional y ausencia de artefactos, texto accidental, marcas de agua o deformaciones.");
+ parts.push("Instrucción de fidelidad: utiliza la imagen de referencia como base y aplica los cambios solicitados sin modificar elementos que no deban cambiar.");
+ $("output").value=parts.join("\n\n");
+}
+$("generateBtn").addEventListener("click",generatePrompt);
+$("copyOutput").addEventListener("click",()=>{
+ if(!$("output").value.trim())generatePrompt();
+ copyText($("output").value,$("copyOutput"));
+});
+$("clearOutput").addEventListener("click",()=>{$("output").value="";});
+fillSelects();
+render();
+generatePrompt();
+</script>
+</body>
+</html>
