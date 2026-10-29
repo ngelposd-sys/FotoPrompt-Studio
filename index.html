@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090b18">
+<meta name="description" content="FotoPrompt Studio: 1600 prompts fotográficos para crear imágenes profesionales con inteligencia artificial.">
+<title>FotoPrompt Studio</title>
+<style>
+:root{
+ --bg:#080a15;--panel:#11152a;--panel2:#181d38;
+ --line:#2b3153;--text:#f5f5ff;--muted:#aab1d0;
+ --purple:#a477ff;--blue:#4b9dff;--cyan:#72e5ff;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;color:var(--text);
+ background:radial-gradient(ellipse at 15% 0%,#251744 0,transparent 35%),
+ radial-gradient(ellipse at 100% 15%,#102b50 0,transparent 35%),var(--bg);
+ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+button,input,select{font:inherit}
+.wrap{width:min(1200px,calc(100% - 30px));margin:auto}
+header{padding:25px 0 30px}
+.brand{display:flex;align-items:center;gap:12px;font-size:22px;font-weight:850;letter-spacing:-1px}
+.logo{
+ width:45px;height:45px;border-radius:15px;display:grid;place-items:center;
+ background:linear-gradient(135deg,var(--purple),var(--blue));font-size:25px;
+ box-shadow:0 5px 30px #875bff55
+}
+.gradient{
+ background:linear-gradient(90deg,#c7a5ff,#72d6ff);
+ -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.badge{
+ display:inline-block;border:1px solid #594a8b;border-radius:50px;
+ color:#d9ceff;background:#211a3a;padding:7px 12px;font-size:12px
+}
+.hero{padding:48px 0 30px;max-width:830px}
+.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
+h1{font-size:clamp(38px,7vw,76px);line-height:1.03;letter-spacing:-3px;margin:15px 0}
+.hero p{color:var(--muted);line-height:1.8;font-size:16px;max-width:720px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.stat{padding:12px 15px;border:1px solid var(--line);background:#11152a;border-radius:13px;color:var(--muted);font-size:13px}
+.stat strong{color:white;font-size:18px;margin-right:5px}
+.toolbar{
+ position:sticky;top:0;z-index:10;background:#090b15ed;
+ backdrop-filter:blur(15px);border-block:1px solid var(--line);padding:13px 0
+}
+.controls{display:grid;grid-template-columns:2fr 1.3fr 1fr;gap:10px}
+.field{
+ min-width:0;width:100%;padding:13px 14px;color:white;
+ background:#141831;border:1px solid #333a61;border-radius:11px;outline:none
+}
+.field:focus{border-color:var(--purple)}
+.status{font-size:12px;color:var(--muted);padding:10px 2px 0}
+main{padding:26px 0 55px}
+.heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:25px 0 15px}
+.heading h2{margin:0;font-size:21px;letter-spacing:-.5px}
+.heading p{margin:5px 0 0;font-size:13px;color:var(--muted)}
+.btn{
+ cursor:pointer;color:#f6f4ff;background:#1a203d;border:1px solid #3b456e;
+ border-radius:10px;padding:10px 13px;font-weight:700;font-size:13px;transition:.18s
+}
+.btn:hover{border-color:var(--purple);background:#28204b}
+.btn.primary{border:0;background:linear-gradient(100deg,#7546dc,#2879d5)}
+.btn.primary:hover{filter:brightness(1.15)}
+.btn:focus-visible,.cat:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.categories{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.cat{
+ display:flex;align-items:center;gap:10px;text-align:left;min-width:0;
+ padding:12px;background:linear-gradient(145deg,#151a32,#0f1223);
+ color:white;border:1px solid var(--line);border-radius:13px;cursor:pointer
+}
+.cat:hover,.cat.active{border-color:var(--purple);background:#211a40}
+.caticon{width:35px;height:35px;flex-shrink:0;border-radius:10px;background:#292044;display:grid;place-items:center;color:#d3bdff}
+.catname{font-size:12px;font-weight:750;line-height:1.4}
+.catcount{display:block;color:var(--muted);font-size:11px;font-weight:400;margin-top:3px}
+.prompts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{background:linear-gradient(145deg,#151a30,#0d1020);border:1px solid var(--line);border-radius:16px;padding:17px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card:hover{border-color:#505a8d}
+.cardtop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.cardtitle{font-size:15px;font-weight:800;line-height:1.45}
+.tag{font-size:10px;color:#d6c8ff;background:#251e40;border:1px solid #4a3d72;border-radius:30px;padding:5px 8px;white-space:nowrap}
+.prompt{color:#cbd0e7;font-size:13px;line-height:1.8;overflow-wrap:anywhere;white-space:pre-wrap}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.empty{grid-column:1/-1;text-align:center;padding:35px;border:1px dashed #444c75;border-radius:15px;color:var(--muted)}
+.pagination{display:flex;justify-content:center;align-items:center;gap:12px;margin:25px 0}
+.pageinfo{color:var(--muted);font-size:12px}
+.guide{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:45px}
+.guide article{background:#11152a;border:1px solid var(--line);border-radius:14px;padding:18px}
+.guide h3{font-size:15px;margin:8px 0}
+.guide p{font-size:13px;color:var(--muted);line-height:1.7;margin:0}
+.step{font-size:11px;color:var(--cyan);font-weight:800;letter-spacing:2px}
+footer{border-top:1px solid var(--line);padding:25px 0;color:#9299b9;font-size:12px;line-height:1.8}
+.toast{
+ position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);
+ opacity:0;pointer-events:none;background:#15332f;border:1px solid #398a76;
+ color:#e2fff7;border-radius:12px;padding:12px 17px;z-index:30;transition:.2s
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){.categories{grid-template-columns:repeat(3,minmax(0,1fr))}.controls{grid-template-columns:1fr 1fr}.controls input{grid-column:1/-1}}
+@media(max-width:620px){
+ .wrap{width:calc(100% - 22px)}.hero{padding-top:30px}h1{letter-spacing:-1.8px}
+ .categories{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .cat{padding:9px 7px;gap:7px}.caticon{width:29px;height:29px}
+ .catname{font-size:11px}.prompts{grid-template-columns:1fr}
+ .controls{grid-template-columns:1fr}.controls input{grid-column:auto}
+ .guide{grid-template-columns:1fr}.heading h2{font-size:18px}
+}
+</style>
+</head>
+<body>
+<header class="wrap">
+ <div class="brand"><div class="logo">✦</div><span>FotoPrompt <span class="gradient">Studio</span></span></div>
+ <section class="hero">
+  <span class="eyebrow">Tu foto · Tu visión · Tu creatividad</span>
+  <h1>Tu próxima imagen empieza con un <span class="gradient">prompt.</span></h1>
+  <p>Descubre una biblioteca de prompts fotográficos profesionales. Elige un estilo, copia el texto y pégalo en una herramienta de inteligencia artificial que permita subir fotografías de referencia.</p>
+  <div class="stats">
+   <div class="stat"><strong>40</strong> categorías</div>
+   <div class="stat"><strong>1.600</strong> prompts</div>
+   <div class="stat"><strong>100%</strong> copiables</div>
+  </div>
+ </section>
+</header>
+
+<section class="toolbar">
+ <div class="wrap">
+  <div class="controls">
+   <input id="search" class="field" type="search" placeholder="Buscar estilo, categoría o palabra..." aria-label="Buscar">
+   <select id="categorySelect" class="field" aria-label="Categoría"><option value="">Todas las categorías</option></select>
+   <select id="sort" class="field" aria-label="Ordenar">
+    <option value="default">Orden original</option>
+    <option value="az">Título A–Z</option>
+    <option value="za">Título Z–A</option>
+   </select>
+  </div>
+  <div class="status" id="status">Preparando biblioteca...</div>
+ </div>
+</section>
+
+<main class="wrap">
+ <section>
+  <div class="heading">
+   <div><h2>Explora las categorías</h2><p>40 estilos con 40 variaciones fotográficas cada uno.</p></div>
+   <button class="btn" id="clear">Limpiar filtros</button>
+  </div>
+  <nav class="categories" id="categories" aria-label="Categorías"></nav>
+ </section>
+ <section>
+  <div class="heading">
+   <div><h2 id="resultsTitle">Prompts profesionales</h2><p id="resultsSubtitle">Selecciona y copia tu prompt favorito.</p></div>
+  </div>
+  <div class="prompts" id="prompts" aria-live="polite"></div>
+  <div class="pagination">
+   <button class="btn primary" id="more">Mostrar más prompts</button>
+   <span class="pageinfo" id="pageinfo"></span>
+  </div>
+ </section>
+ <section class="guide">
+  <article><div class="step">PASO 01</div><h3>Elige una categoría</h3><p>Busca retratos, fantasía, moda, cine, viajes y muchas otras temáticas visuales.</p></article>
+  <article><div class="step">PASO 02</div><h3>Copia el prompt</h3><p>Usa el botón de cada tarjeta para copiar el texto completo al portapapeles.</p></article>
+  <article><div class="step">PASO 03</div><h3>Crea tu imagen</h3><p>Abre una IA compatible, sube tu fotografía y pega el prompt para generar la imagen.</p></article>
+ </section>
+</main>
+
+<footer><div class="wrap">FotoPrompt Studio · Biblioteca de inspiración visual. Cada herramienta de IA interpreta los prompts de manera diferente. Utiliza fotografías propias o imágenes que tengas permiso para editar.</div></footer>
+<div class="toast" id="toast" role="status">Prompt copiado</div>
+
+<script>
+"use strict";
+
+/* 40 categorías. Cada una recibe 40 direcciones visuales diferentes. */
+const categoriesData = [
+["Retrato editorial","✦","retrato editorial de revista"],
+["Cine y película","🎬","fotograma cinematográfico"],
+["Moda de alta costura","◇","fotografía de alta costura"],
+["Streetwear urbano","⬡","retrato streetwear urbano"],
+["Belleza y cosmética","✿","retrato beauty profesional"],
+["Fotografía corporativa","▣","retrato corporativo profesional"],
+["Marca personal","◎","fotografía de marca personal"],
+["Bodas y compromiso","♡","retrato romántico nupcial"],
+["Parejas románticas","♥","fotografía romántica de pareja"],
+["Familia y generaciones","⌂","retrato familiar profesional"],
+["Infantil y juventud","☼","retrato juvenil editorial"],
+["Deporte y fitness","⚡","fotografía deportiva"],
+["Música y artistas","♫","retrato de artista musical"],
+["Hip-hop y cultura urbana","♬","retrato hip-hop editorial"],
+["Fantasía épica","⚔","retrato de fantasía épica"],
+["Ciencia ficción","⌘","retrato de ciencia ficción"],
+["Cyberpunk neón","◈","retrato cyberpunk"],
+["Steampunk","⚙","retrato steampunk"],
+["Épocas históricas","⌛","retrato histórico cinematográfico"],
+["Mitología y leyendas","♜","retrato mitológico artístico"],
+["Terror gótico","☾","retrato gótico de suspense"],
+["Fantasía oscura","♠","retrato de fantasía oscura"],
+["Seres celestiales","✧","retrato celestial fantástico"],
+["Guerreros y armaduras","⚔","retrato de guerrero fantástico"],
+["Realeza fantástica","♛","retrato de realeza fantástica"],
+["Bosques y naturaleza","♧","retrato artístico en naturaleza"],
+["Mar y costa","≈","retrato junto al mar"],
+["Desierto y dunas","△","retrato editorial en desierto"],
+["Montaña y aventura","▲","retrato de aventura en montaña"],
+["Ciudad y arquitectura","▦","retrato urbano arquitectónico"],
+["Viajes y destinos","✈","retrato de viaje editorial"],
+["Retro y vintage","◷","retrato vintage"],
+["Y2K y pop digital","✺","retrato pop digital Y2K"],
+["Minimalismo artístico","□","retrato minimalista"],
+["Blanco y negro","◐","retrato en blanco y negro"],
+["Surrealismo y arte","❖","retrato surrealista conceptual"],
+["Agua y reflejos","≋","retrato artístico con agua"],
+["Luz y larga exposición","☄","fotografía creativa de luz"],
+["Producto y publicidad","⬢","fotografía publicitaria profesional"],
+["Portadas y redes sociales","▤","retrato para contenido digital"]
+];
+
+/* 40 variaciones compositivas, de iluminación, color y acabado. */
+const variations = [
+["composición centrada y simétrica","encuadre vertical 4:5","espacio negativo alrededor del sujeto"],
+["plano de tres cuartos con profundidad","perspectiva natural de 50 mm","fondo arquitectónico con líneas guía"],
+["primer plano expresivo","óptica de retrato de 85 mm","fondo suave con desenfoque óptico"],
+["plano medio con entorno narrativo","perspectiva de 35 mm controlada","capas de profundidad claramente definidas"],
+["contrapicado sutil","líneas diagonales elegantes","presencia visual poderosa"],
+["encuadre lateral con aire cinematográfico","sujeto situado en un tercio","espacio visual hacia la mirada"],
+["composición geométrica","simetría arquitectónica","equilibrio entre figura y fondo"],
+["retrato ambiental","elementos de primer plano desenfocados","sensación de profundidad real"],
+["silueta recortada contra el fondo","contraluz de contorno","separación clara entre sujeto y escenario"],
+["composición editorial asimétrica","recorte deliberado de revista","jerarquía visual limpia"],
+["luz suave de ventana","sombras delicadas","piel con textura natural"],
+["luz lateral de estudio","claroscuro controlado","volumen facial definido"],
+["contraluz dorado","brillo sutil en el cabello","atmósfera cálida"],
+["iluminación difusa envolvente","sombras suaves","transiciones tonales naturales"],
+["luz dura de estilo editorial","sombras geométricas","contraste fotográfico definido"],
+["iluminación cinematográfica de tres puntos","luz principal y relleno equilibrados","rostro bien modelado"],
+["reflejos de neón en el entorno","luces de colores controladas","contraste entre luces y sombras"],
+["claroscuro pictórico","zonas oscuras profundas","rostro correctamente expuesto"],
+["luz de amanecer","bruma ambiental discreta","tonos suaves y atmosféricos"],
+["iluminación nocturna con fuentes prácticas","luces ambientales creíbles","reflejos coherentes"],
+["paleta tierra, arena y carbón","contraste moderado","acabado sofisticado"],
+["azul acero y plata","luces frías","atmósfera moderna"],
+["ámbar, crema y dorado","sombras cálidas","sensación de lujo"],
+["magenta y cian equilibrados","reflejos cromáticos","ambiente contemporáneo"],
+["pasteles desaturados","transiciones suaves","estética delicada"],
+["monocromía elegante","variaciones tonales sutiles","composición atemporal"],
+["colores joya y negros profundos","contraste rico","acabado premium"],
+["colores naturales fieles","balance de blancos preciso","piel sin saturación excesiva"],
+["duotono gráfico","separación cromática clara","impacto visual moderno"],
+["colores suaves con un acento intenso","foco visual definido","paleta coherente"],
+["fondo con textura realista","materiales con detalle táctil","escenario creíble"],
+["fondo limpio de estudio","sombras de contacto naturales","sin distracciones visuales"],
+["fondo atmosférico con bruma sutil","profundidad gradual","perspectiva consistente"],
+["bokeh orgánico en segundo plano","enfoque preciso en los ojos","desenfoque natural"],
+["texturas de tela claramente visibles","detalle de materiales","iluminación que revela el relieve"],
+["acabado analógico con grano fino","contraste orgánico","sensación fotográfica auténtica"],
+["reflejos controlados en superficies","materiales físicamente coherentes","brillos sin zonas quemadas"],
+["detalle fino en rostro y ojos","retoque de piel discreto","rasgos reconocibles"],
+["composición panorámica cinematográfica","entorno con narrativa","profundidad de campo cuidada"],
+["estética de campaña publicitaria","composición pulida","acabado listo para portafolio"]
+];
+
+const moods = [
+"elegancia contemporánea","energía creativa","serenidad sofisticada","misterio cinematográfico",
+"lujo discreto","espíritu aventurero","nostalgia visual","fuerza y determinación",
+"romanticismo moderno","minimalismo refinado"
+];
+
+const data = categoriesData.map((c,ci)=>({
+ name:c[0],icon:c[1],base:c[2],
+ prompts:variations.map((v,vi)=>({
+  id:ci+"-"+vi,
+  title:c[0]+" — "+String(vi+1).padStart(2,"0"),
+  prompt:makePrompt(c,v,ci,vi)
+ }))
+}));
+
+function makePrompt(cat,v,ci,vi){
+ const mood=moods[(ci*3+vi)%moods.length];
+ const sceneDetails=[
+  "añade detalles ambientales que refuercen la historia visual sin distraer del sujeto",
+  "organiza la imagen para dirigir la mirada hacia el rostro y la expresión",
+  "integra el vestuario y el escenario de forma coherente con la dirección artística",
+  "mantén una relación natural entre el sujeto, la perspectiva y los objetos cercanos",
+  "construye una escena visualmente rica, pero evita los elementos innecesarios"
+ ];
+ const details=sceneDetails[(ci+vi)%sceneDetails.length];
+ const identities=[
+  "Utiliza mi fotografía subida como referencia principal de identidad y conserva mis rasgos reconocibles.",
+  "Mantén la identidad de la persona de referencia; modifica el estilismo y el entorno sin sustituir su rostro.",
+  "Respeta las proporciones faciales y la expresión reconocible de la fotografía original.",
+  "Integra a la persona de la imagen de referencia de manera natural, conservando su identidad visual.",
+  "Conserva los rasgos faciales principales y evita convertir a la persona en alguien diferente."
+ ];
+ const identity=identities[(ci*2+vi)%identities.length];
+ const finishes=[
+  "Acabado de fotografía profesional de alta resolución.",
+  "Retoque editorial sutil, con textura auténtica y sin efecto plástico.",
+  "Iluminación físicamente coherente y materiales con aspecto realista.",
+  "Calidad de portafolio profesional y gradación de color refinada.",
+  "Resultado pulido, con anatomía natural y sin sobreprocesamiento."
+ ];
+ const finish=finishes[(ci+vi*2)%finishes.length];
+ const scene=[
+  "La imagen debe transmitir "+mood+".",
+  "Prioriza una narrativa visual de "+mood+".",
+  "Toda la dirección artística debe expresar "+mood+".",
+  "Refuerza el ambiente de "+mood+" con luz, composición y color.",
+  "Crea una atmósfera de "+mood+" sin perder naturalidad."
+ ][(ci+vi)%5];
+ return "Transforma mi fotografía en "+cat[2]+", con una dirección artística de "+cat[0]+". "+
+ "Concepto visual: "+v[0]+", "+v[1]+" y "+v[2]+". "+
+ scene+" "+identity+" "+details+". "+finish+" "+
+ "Evita marcas de agua, texto accidental, logotipos inventados, rasgos duplicados, manos deformadas, dedos adicionales y artefactos digitales. "+
+ "Mantén una composición profesional, una iluminación coherente y una imagen visualmente cuidada.";
+}
+
+const $=id=>document.getElementById(id);
+let activeCategory="";
+let visibleCount=24;
+let expanded=new Set();
+
+const all=data.flatMap(c=>c.prompts.map(p=>({
+ ...p,category:c.name,icon:c.icon
+})));
+
+function esc(s){
+ return String(s).replace(/[&<>"']/g,ch=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ })[ch]);
+}
+
+function init(){
+ data.forEach(c=>{
+  const option=document.createElement("option");
+  option.value=c.name;option.textContent=c.name;
+  $("categorySelect").appendChild(option);
+ });
+ renderCategories();
+ render();
+ $("search").addEventListener("input",()=>{visibleCount=24;render()});
+ $("categorySelect").addEventListener("change",()=>{
+  activeCategory=$("categorySelect").value;
+  visibleCount=24;renderCategories();render();
+ });
+ $("sort").addEventListener("change",()=>{visibleCount=24;render()});
+ $("clear").addEventListener("click",()=>{
+  $("search").value="";$("categorySelect").value="";
+  $("sort").value="default";activeCategory="";
+  visibleCount=24;renderCategories();render();
+ });
+ $("more").addEventListener("click",()=>{visibleCount+=24;render()});
+}
+
+function renderCategories(){
+ $("categories").innerHTML=data.map(c=>`
+  <button class="cat ${activeCategory===c.name?"active":""}" data-cat="${esc(c.name)}">
+   <span class="caticon">${c.icon}</span>
+   <span class="catname">${esc(c.name)}<span class="catcount">40 prompts</span></span>
+  </button>`).join("");
+ $("categories").querySelectorAll("[data-cat]").forEach(b=>{
+  b.addEventListener("click",()=>{
+   activeCategory=activeCategory===b.dataset.cat?"":b.dataset.cat;
+   $("categorySelect").value=activeCategory;
+   visibleCount=24;renderCategories();render();
+  });
+ });
+}
+
+function filtered(){
+ const q=$("search").value.trim().toLocaleLowerCase("es");
+ let list=all.filter(p=>
+  (!activeCategory||p.category===activeCategory)&&
+  (!q||(p.title+" "+p.category+" "+p.prompt).toLocaleLowerCase("es").includes(q))
+ );
+ if($("sort").value==="az")list.sort((a,b)=>a.title.localeCompare(b.title,"es"));
+ if($("sort").value==="za")list.sort((a,b)=>b.title.localeCompare(a.title,"es"));
+ return list;
+}
+
+function render(){
+ const list=filtered();
+ const shown=list.slice(0,visibleCount);
+ $("status").textContent=
+  list.length.toLocaleString("es-ES")+" prompts encontrados · 40 categorías · 1.600 prompts en total";
+ $("resultsTitle").textContent=activeCategory||"Prompts profesionales";
+ $("resultsSubtitle").textContent=
+  "Mostrando "+shown.length+" de "+list.length+". Copia el texto y úsalo con tu fotografía.";
+ $("pageinfo").textContent=shown.length+" / "+list.length;
+ $("more").style.display=shown.length<list.length?"inline-block":"none";
+
+ if(!shown.length){
+  $("prompts").innerHTML='<div class="empty">No hay resultados. Prueba otra búsqueda o limpia los filtros.</div>';
+  return;
+ }
+
+ $("prompts").innerHTML=shown.map(p=>{
+  const open=expanded.has(p.id);
+  const text=open||p.prompt.length<=260?p.prompt:p.prompt.slice(0,260)+"…";
+  return `<article class="card">
+   <div class="cardtop">
+    <div class="cardtitle">${esc(p.title)}</div>
+    <span class="tag">${p.icon} ${esc(p.category)}</span>
+   </div>
+   <div class="prompt">${esc(text)}</div>
+   <div class="actions">
+    <button class="btn primary" data-copy="${p.id}">⧉ Copiar prompt</button>
+    <button class="btn" data-toggle="${p.id}">${open?"Ocultar":"Ver completo"}</button>
+   </div>
+  </article>`;
+ }).join("");
+
+ $("prompts").querySelectorAll("[data-copy]").forEach(b=>{
+  b.addEventListener("click",async()=>{
+   const p=all.find(x=>x.id===b.dataset.copy);
+   try{
+    await navigator.clipboard.writeText(p.prompt);
+    toast("✓ Prompt copiado al portapapeles");
+   }catch(e){
+    const ta=document.createElement("textarea");
+    ta.value=p.prompt;document.body.appendChild(ta);
+    ta.select();
+    let ok=false;
+    try{ok=document.execCommand("copy")}catch(err){}
+    ta.remove();
+    toast(ok?"✓ Prompt copiado":"No se pudo copiar. Abre la tarjeta y copia el texto.");
+   }
+  });
+ });
+ $("prompts").querySelectorAll("[data-toggle]").forEach(b=>{
+  b.addEventListener("click",()=>{
+   expanded.has(b.dataset.toggle)?
+    expanded.delete(b.dataset.toggle):expanded.add(b.dataset.toggle);
+   render();
+  });
+ });
+}
+
+let toastTimer;
+function toast(message){
+ $("toast").textContent=message;
+ $("toast").classList.add("show");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>$("toast").classList.remove("show"),2200);
+}
+
+init();
+</script>
+</body>
+</html>
