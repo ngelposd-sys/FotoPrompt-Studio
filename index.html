@@ -1,0 +1,1027 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0b16">
+<title>FotoPrompt Studio — Biblioteca y Creador Pro</title>
+<style>
+:root{
+  --bg:#090a12;--panel:#111321;--panel2:#171a2c;
+  --border:#292d47;--text:#f3f2ff;--muted:#a5a8c4;
+  --purple:#8b5cf6;--blue:#38bdf8;--pink:#ec4899;
+  --gradient:linear-gradient(115deg,#8b5cf6,#38bdf8);
+  --radius:17px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:radial-gradient(ellipse at top,#17132d 0,#090a12 45%);
+  color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+  min-height:100vh;line-height:1.55
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--blue);outline-offset:2px
+}
+header{
+  padding:25px 18px 18px;text-align:center;border-bottom:1px solid #29243f;
+  background:linear-gradient(180deg,#141027cc,transparent)
+}
+.brand{display:flex;align-items:center;justify-content:center;gap:12px}
+.logo{
+  width:48px;height:48px;border-radius:15px;background:var(--gradient);
+  display:grid;place-items:center;font-size:25px;box-shadow:0 0 30px #8b5cf633
+}
+h1{font-size:clamp(25px,4vw,39px);margin:0;letter-spacing:-1.2px}
+h1 span,.gradient-text{
+  background:var(--gradient);background-clip:text;-webkit-background-clip:text;color:transparent
+}
+.subtitle{color:var(--muted);margin:9px auto 0;max-width:720px;font-size:14px}
+.container{width:min(1200px,calc(100% - 30px));margin:0 auto}
+.stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:20px auto}
+.stat{
+  border:1px solid var(--border);background:#111321bb;border-radius:12px;
+  padding:8px 14px;color:var(--muted);font-size:12px
+}
+.stat strong{color:white;font-size:15px;margin-right:4px}
+.tabs{
+  display:flex;gap:7px;overflow-x:auto;padding:6px;margin:20px 0;
+  border:1px solid var(--border);background:#0e101b;border-radius:15px
+}
+.tab{
+  flex:1;min-width:max-content;border:0;border-radius:10px;padding:12px 16px;
+  color:var(--muted);background:transparent;font-weight:700
+}
+.tab.active{color:white;background:var(--gradient);box-shadow:0 5px 20px #8b5cf626}
+.page{display:none;padding-bottom:45px}
+.page.active{display:block}
+.panel{
+  background:linear-gradient(145deg,#151729,#10121f);
+  border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:17px
+}
+h2{font-size:23px;margin:0 0 5px;letter-spacing:-.5px}
+h3{font-size:16px;margin:0 0 12px}
+.description{color:var(--muted);font-size:13px;margin:0 0 17px}
+.controls{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px
+}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:12px;font-weight:700;color:#c7c8df}
+input,select,textarea{
+  width:100%;min-width:0;color:var(--text);background:#0c0e19;
+  border:1px solid #30344e;border-radius:10px;padding:11px 12px
+}
+select option{background:#111321}
+textarea{resize:vertical;min-height:90px}
+input::placeholder,textarea::placeholder{color:#747992}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.btn{
+  border:1px solid var(--border);border-radius:10px;padding:10px 15px;
+  color:white;background:#1c2035;font-weight:700;font-size:13px;
+  transition:transform .15s,border-color .15s
+}
+.btn:hover{transform:translateY(-1px);border-color:#7772b5}
+.btn.primary{border:0;background:var(--gradient)}
+.btn.subtle{background:transparent;color:#c4c7df}
+.btn.danger{color:#fda4af}
+.btn.small{padding:7px 10px;font-size:12px}
+.prompt-output{
+  white-space:pre-wrap;overflow-wrap:anywhere;background:#090b15;
+  border:1px solid #35304e;border-radius:12px;padding:17px;
+  min-height:110px;font-size:14px;line-height:1.8;color:#e7e5ff
+}
+.output-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.output-heading h3{margin:0}
+.preset-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.preset{
+  text-align:left;border:1px solid var(--border);border-radius:12px;
+  padding:12px;background:#101321;color:white
+}
+.preset:hover,.preset.selected{border-color:var(--purple);background:#211a3a}
+.preset strong{display:block;font-size:13px}
+.preset span{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+.toolbar .grow{flex:1;min-width:200px}
+.toolbar select{width:auto;max-width:100%}
+.results-meta{font-size:12px;color:var(--muted);margin:10px 0 14px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.prompt-card{
+  background:linear-gradient(140deg,#15182a,#10121d);
+  border:1px solid var(--border);border-radius:14px;padding:15px;min-width:0
+}
+.card-top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.card-top h3{font-size:14px;line-height:1.4;margin:0 0 8px}
+.category-label{
+  display:inline-block;color:#c4b5fd;background:#292044;border:1px solid #403264;
+  padding:3px 8px;border-radius:20px;font-size:10px;margin-bottom:9px
+}
+.card-text{color:#c8c9df;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+.card-text.collapsed{
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden
+}
+.card-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:13px}
+.icon-btn{
+  background:transparent;border:1px solid var(--border);color:#c5c7df;
+  border-radius:8px;padding:6px 9px;font-size:12px
+}
+.icon-btn:hover{border-color:var(--purple);color:white}
+.icon-btn.fav{color:#f9a8d4;border-color:#73345e}
+.center{text-align:center}
+.empty{padding:45px 15px;text-align:center;color:var(--muted)}
+.empty strong{display:block;color:white;margin-bottom:5px}
+footer{text-align:center;color:#777d9a;padding:22px 15px;font-size:11px;border-top:1px solid var(--border)}
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);
+  background:#25213e;border:1px solid #6550a0;color:white;
+  padding:11px 17px;border-radius:12px;opacity:0;pointer-events:none;
+  transition:.2s;z-index:10;font-size:13px;max-width:90%;text-align:center
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.badge{font-size:11px;color:#a5f3fc;background:#12303b;padding:4px 8px;border-radius:20px}
+.checkline{display:flex;align-items:center;gap:8px;font-size:13px;color:#d3d4e8}
+.checkline input{width:auto;accent-color:var(--purple)}
+.section-title{margin:23px 0 12px}
+.load-wrap{text-align:center;margin:20px 0}
+hr{border:0;border-top:1px solid var(--border);margin:18px 0}
+@media(max-width:850px){
+  .controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .preset-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+  .container{width:calc(100% - 20px)}
+  header{padding-top:20px}
+  .panel{padding:14px}
+  .cards{grid-template-columns:1fr}
+  .controls{grid-template-columns:1fr 1fr}
+  .tab{padding:11px 12px;font-size:12px}
+  .toolbar select{flex:1}
+  .preset-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">✦</div>
+    <div><h1>FotoPrompt <span>Studio</span></h1></div>
+  </div>
+  <p class="subtitle">Tu laboratorio creativo de fotografía e inteligencia artificial. Explora, combina y crea prompts profesionales.</p>
+  <div class="stats">
+    <div class="stat"><strong id="totalStat">4.600</strong> prompts</div>
+    <div class="stat"><strong id="categoryStat">40</strong> categorías</div>
+    <div class="stat"><strong id="favoriteStat">0</strong> favoritos</div>
+  </div>
+</header>
+
+<main class="container">
+  <nav class="tabs" aria-label="Secciones principales">
+    <button class="tab active" data-page="library">▤ Biblioteca</button>
+    <button class="tab" data-page="creator">✦ Creador Pro</button>
+    <button class="tab" data-page="favorites">♡ Favoritos</button>
+    <button class="tab" data-page="history">◷ Historial</button>
+  </nav>
+
+  <!-- BIBLIOTECA -->
+  <section id="library" class="page active">
+    <div class="panel">
+      <h2>Biblioteca fotográfica</h2>
+      <p class="description">Encuentra inspiración entre miles de combinaciones fotográficas. Busca por nombre, categoría o contenido.</p>
+      <div class="toolbar">
+        <input class="grow" id="search" type="search" placeholder="Buscar retrato, iluminación, paisaje..." aria-label="Buscar prompts">
+        <select id="categoryFilter" aria-label="Filtrar categoría">
+          <option value="all">Todas las categorías</option>
+        </select>
+        <select id="sortOrder" aria-label="Ordenar prompts">
+          <option value="az">Nombre A–Z</option>
+          <option value="za">Nombre Z–A</option>
+        </select>
+      </div>
+      <div class="results-meta" id="resultsMeta">Preparando biblioteca...</div>
+      <div id="libraryCards" class="cards"></div>
+      <div id="libraryEmpty" class="empty" hidden>
+        <strong>No se encontraron prompts</strong>
+        Prueba con otra búsqueda o categoría.
+      </div>
+      <div class="load-wrap"><button class="btn primary" id="loadMore">Cargar más prompts</button></div>
+    </div>
+    <div class="panel">
+      <h3>Cómo utilizar un prompt</h3>
+      <p class="description">1. Encuentra un prompt que te guste. 2. Cópialo. 3. Pégalo en tu generador de imágenes favorito y personalízalo si lo necesitas.</p>
+      <p class="description">Los resultados dependen de la herramienta de IA utilizada. Los nombres de cámaras y objetivos sirven como orientación creativa, no garantizan que una imagen reproduzca fielmente un equipo real.</p>
+    </div>
+  </section>
+
+  <!-- CREADOR -->
+  <section id="creator" class="page">
+    <div class="panel">
+      <h2>Creador Pro de prompts</h2>
+      <p class="description">Combina los elementos de tu fotografía ideal. El texto se genera en tu navegador y puedes editarlo libremente.</p>
+      <h3 class="section-title">Empieza con un estilo</h3>
+      <div class="preset-grid" id="presetGrid"></div>
+      <hr>
+      <h3 class="section-title">1. Sujeto y composición</h3>
+      <div class="controls">
+        <div class="field"><label for="subject">Sujeto principal</label><input id="subject" placeholder="Ej.: una mujer con vestido rojo" value="un retrato editorial de una persona"></div>
+        <div class="field"><label for="photoType">Tipo de fotografía</label><select id="photoType"><option>Retrato</option><option>Moda</option><option>Producto</option><option>Paisaje</option><option>Arquitectura</option><option>Fotografía callejera</option><option>Macro</option><option>Deportes</option><option>Belleza</option><option>Editorial</option><option>Conceptual</option></select></div>
+        <div class="field"><label for="framing">Encuadre</label><select id="framing"><option>primer plano</option><option>primerísimo primer plano</option><option>plano medio</option><option>plano americano</option><option>plano entero</option><option>gran plano general</option><option>composición cenital</option><option>ángulo bajo</option><option>ángulo alto</option><option>detalle macro</option></select></div>
+        <div class="field"><label for="pose">Pose o composición</label><select id="pose"><option>pose natural y espontánea</option><option>pose editorial elegante</option><option>mirada directa a cámara</option><option>mirada hacia el horizonte</option><option>movimiento dinámico congelado</option><option>composición simétrica</option><option>regla de los tercios</option><option>pose relajada y auténtica</option><option>composición minimalista</option><option>pose dramática</option></select></div>
+      </div>
+
+      <h3 class="section-title">2. Cámara y óptica</h3>
+      <div class="controls">
+        <div class="field"><label for="camera">Cámara</label><select id="camera"><option>cámara profesional de formato completo</option><option>cámara de formato medio</option><option>cámara cinematográfica digital</option><option>cámara réflex profesional</option><option>cámara sin espejo de alta resolución</option><option>cámara analógica de 35 mm</option><option>cámara instantánea analógica</option><option>cámara de gran formato</option><option>cámara compacta documental</option><option>captura móvil de calidad profesional</option></select></div>
+        <div class="field"><label for="lens">Objetivo</label><select id="lens"><option>objetivo de 35 mm</option><option>objetivo de 50 mm</option><option>objetivo de 85 mm para retrato</option><option>teleobjetivo de 135 mm</option><option>gran angular de 24 mm</option><option>ultra gran angular de 16 mm</option><option>objetivo macro de 100 mm</option><option>objetivo tilt-shift</option><option>teleobjetivo de 200 mm</option><option>objetivo anamórfico cinematográfico</option></select></div>
+        <div class="field"><label for="aperture">Apertura</label><select id="aperture"><option>f/1.4, profundidad de campo muy reducida</option><option>f/1.8, bokeh suave</option><option>f/2.8, separación del sujeto</option><option>f/4, equilibrio entre sujeto y fondo</option><option>f/5.6, nitidez equilibrada</option><option>f/8, gran nitidez general</option><option>f/11, amplia profundidad de campo</option><option>apertura creativa adaptada a la escena</option></select></div>
+        <div class="field"><label for="focus">Enfoque</label><select id="focus"><option>enfoque preciso en los ojos</option><option>nitidez en el producto principal</option><option>enfoque profundo de toda la escena</option><option>enfoque selectivo artístico</option><option>foco cinematográfico sobre el sujeto</option><option>detalle de textura extremadamente nítido</option></select></div>
+      </div>
+
+      <h3 class="section-title">3. Escenario y ambiente</h3>
+      <div class="controls">
+        <div class="field"><label for="location">Lugar</label><select id="location"><option>estudio fotográfico profesional</option><option>calle urbana contemporánea</option><option>azotea con vistas a la ciudad</option><option>bosque frondoso</option><option>playa tropical</option><option>desierto de dunas</option><option>montañas majestuosas</option><option>interior de lujo</option><option>cafetería acogedora</option><option>callejón futurista</option><option>palacio histórico</option><option>jardín botánico</option><option>paisaje rural</option><option>pasarela de moda</option><option>laboratorio de ciencia ficción</option><option>calle lluviosa de noche</option><option>estudio minimalista blanco</option><option>interior industrial</option><option>lago rodeado de niebla</option><option>escenario surrealista</option></select></div>
+        <div class="field"><label for="time">Hora del día</label><select id="time"><option>hora dorada al atardecer</option><option>amanecer suave</option><option>mediodía luminoso</option><option>hora azul del crepúsculo</option><option>noche urbana</option><option>madrugada con niebla</option><option>luz difusa de un día nublado</option><option>atardecer dramático</option><option>noche de cielo estrellado</option><option>luz interior controlada</option></select></div>
+        <div class="field"><label for="weather">Clima y atmósfera</label><select id="weather"><option>aire limpio y atmósfera nítida</option><option>lluvia ligera con reflejos</option><option>niebla cinematográfica</option><option>tormenta dramática a lo lejos</option><option>nieve suave</option><option>brisa que mueve el cabello y la ropa</option><option>ambiente cálido y seco</option><option>humedad tropical</option><option>polvo iluminado en suspensión</option><option>cielo despejado</option><option>gotas de agua sobre superficies</option><option>humo ambiental sutil</option></select></div>
+        <div class="field"><label for="details">Detalles adicionales</label><input id="details" placeholder="Ej.: flores, cristales, coches clásicos"></div>
+      </div>
+
+      <h3 class="section-title">4. Iluminación y color</h3>
+      <div class="controls">
+        <div class="field"><label for="lighting">Iluminación</label><select id="lighting"><option>luz suave de ventana</option><option>iluminación cinematográfica de tres puntos</option><option>luz lateral dramática</option><option>contraluz con halo luminoso</option><option>luz de neón azul y violeta</option><option>luz cálida de atardecer</option><option>flash editorial directo</option><option>iluminación Rembrandt</option><option>luz difusa de estudio</option><option>iluminación volumétrica con rayos visibles</option><option>luz natural ambiental</option><option>sombras duras y geométricas</option><option>iluminación de producto de alta gama</option><option>luz de velas</option><option>iluminación de baja intensidad</option></select></div>
+        <div class="field"><label for="palette">Paleta de colores</label><select id="palette"><option>azul eléctrico y violeta</option><option>tonos cálidos dorados</option><option>blanco y negro de alto contraste</option><option>colores pastel delicados</option><option>tonos tierra naturales</option><option>rojo intenso y negro</option><option>verde esmeralda y oro</option><option>azul y naranja cinematográficos</option><option>colores neutros y elegantes</option><option>colores vibrantes y saturados</option><option>monocromo minimalista</option><option>paleta fría y melancólica</option><option>rosa y magenta</option><option>colores naturales fieles</option><option>cian y magenta futuristas</option></select></div>
+        <div class="field"><label for="contrast">Contraste</label><select id="contrast"><option>contraste cinematográfico equilibrado</option><option>alto contraste dramático</option><option>contraste suave y delicado</option><option>sombras profundas y negros ricos</option><option>tonalidad luminosa de bajo contraste</option><option>rango dinámico amplio</option></select></div>
+        <div class="field"><label for="mood">Ambiente emocional</label><select id="mood"><option>elegante y sofisticado</option><option>misterioso y enigmático</option><option>alegre y optimista</option><option>melancólico y contemplativo</option><option>épico y grandioso</option><option>íntimo y romántico</option><option>lujoso y exclusivo</option><option>futurista y tecnológico</option><option>sereno y minimalista</option><option>salvaje y aventurero</option><option>onírico y surrealista</option><option>natural y documental</option></select></div>
+      </div>
+
+      <h3 class="section-title">5. Estética y acabado</h3>
+      <div class="controls">
+        <div class="field"><label for="style">Estilo visual</label><select id="style"><option>fotografía fotorrealista</option><option>cine de autor</option><option>editorial de alta moda</option><option>campaña publicitaria de lujo</option><option>fotografía documental</option><option>estética cyberpunk</option><option>fantasía épica</option><option>ciencia ficción futurista</option><option>fotografía analógica vintage</option><option>minimalismo contemporáneo</option><option>surrealismo artístico</option><option>fotografía de belleza</option><option>estética de revista de moda</option><option>fotografía arquitectónica</option><option>fotografía gastronómica profesional</option><option>arte conceptual digital</option><option>estética retrofuturista</option><option>fotografía de naturaleza</option><option>estilo noir cinematográfico</option><option>publicidad comercial moderna</option></select></div>
+        <div class="field"><label for="texture">Textura</label><select id="texture"><option>texturas naturales realistas</option><option>grano analógico fino</option><option>superficies limpias y pulidas</option><option>piel natural sin efecto plástico</option><option>texturas cinematográficas sutiles</option><option>materiales con reflejos precisos</option><option>textura mate elegante</option><option>detalle microscópico de superficies</option></select></div>
+        <div class="field"><label for="quality">Nivel de detalle</label><select id="quality"><option>detalle profesional de alta resolución</option><option>detalle extremo y microtexturas</option><option>acabado editorial refinado</option><option>realismo natural sin exceso de retoque</option><option>acabado cinematográfico de gran calidad</option><option>detalle artístico controlado</option></select></div>
+        <div class="field"><label for="aspect">Formato de imagen</label><select id="aspect"><option value="4:5">4:5 — retrato para redes</option><option value="9:16">9:16 — vertical</option><option value="16:9">16:9 — panorámico</option><option value="1:1">1:1 — cuadrado</option><option value="3:2">3:2 — fotografía clásica</option><option value="2:3">2:3 — retrato vertical</option><option value="21:9">21:9 — cinematográfico</option></select></div>
+      </div>
+
+      <h3 class="section-title">6. Opciones avanzadas</h3>
+      <div class="controls">
+        <div class="field"><label for="creativity">Intensidad creativa</label><select id="creativity"><option value="natural">Natural y realista</option><option value="balanced" selected>Equilibrada</option><option value="high">Creatividad elevada</option><option value="experimental">Experimental y atrevida</option></select></div>
+        <div class="field"><label for="language">Idioma del prompt</label><select id="language"><option value="es">Español</option><option value="en">Inglés</option></select></div>
+        <div class="field"><label for="identity">Referencia de identidad</label><select id="identity"><option value="">No especificar</option><option value="Preservar fielmente la identidad y los rasgos visibles de la persona de referencia, si se proporciona una imagen.">Conservar identidad de referencia</option><option value="Mantener rasgos naturales y proporciones humanas realistas.">Proporciones humanas naturales</option></select></div>
+        <div class="field"><label for="negative">Prompt negativo</label><input id="negative" value="baja resolución, desenfoque no deseado, anatomía incorrecta, dedos deformes, artefactos, marcas de agua, texto ilegible"></div>
+      </div>
+      <div style="margin-top:16px">
+        <label class="checkline"><input type="checkbox" id="includeNegative" checked> Incluir prompt negativo en el resultado</label>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="generateBtn">✦ Generar prompt</button>
+        <button class="btn" id="variationBtn">↻ Crear variación</button>
+        <button class="btn" id="copyCreator">▣ Copiar prompt</button>
+        <button class="btn" id="downloadCreator">↓ Descargar TXT</button>
+        <button class="btn subtle" id="clearCreator">Limpiar opciones</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="output-heading"><h3>Tu prompt personalizado</h3><span class="badge" id="creatorWordCount">0 palabras</span></div>
+      <textarea id="creatorOutput" class="prompt-output" style="min-height:220px" aria-label="Prompt generado" placeholder="Tu prompt aparecerá aquí. Puedes editarlo manualmente."></textarea>
+      <div class="actions">
+        <button class="btn primary" id="saveCreatorFavorite">♡ Guardar en favoritos</button>
+        <button class="btn" id="saveCreatorHistory">◷ Guardar en historial</button>
+      </div>
+      <p class="description" style="margin-top:12px">Consejo: describe el sujeto con precisión y evita acumular instrucciones contradictorias. Algunas herramientas de IA interpretan los prompts de manera diferente.</p>
+    </div>
+  </section>
+
+  <!-- FAVORITOS -->
+  <section id="favorites" class="page">
+    <div class="panel">
+      <h2>Mis favoritos</h2>
+      <p class="description">Tus prompts guardados en este navegador.</p>
+      <div class="toolbar">
+        <input id="favoriteSearch" class="grow" type="search" placeholder="Buscar en favoritos...">
+        <button class="btn danger" id="clearFavorites">Vaciar favoritos</button>
+      </div>
+      <div id="favoriteCards" class="cards"></div>
+      <div id="favoriteEmpty" class="empty"><strong>Aún no tienes favoritos</strong>Guarda prompts desde la biblioteca o el creador.</div>
+    </div>
+  </section>
+
+  <!-- HISTORIAL -->
+  <section id="history" class="page">
+    <div class="panel">
+      <h2>Historial de creaciones</h2>
+      <p class="description">Recupera prompts que has creado o utilizado recientemente.</p>
+      <div class="toolbar">
+        <input id="historySearch" class="grow" type="search" placeholder="Buscar en el historial...">
+        <button class="btn danger" id="clearHistory">Borrar historial</button>
+      </div>
+      <div id="historyCards" class="cards"></div>
+      <div id="historyEmpty" class="empty"><strong>Tu historial está vacío</strong>Genera un prompt y guárdalo aquí para recuperarlo después.</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  FotoPrompt Studio · Herramienta creativa independiente · © 2026<br>
+  Los prompts son combinaciones de texto para herramientas externas. Esta web no genera imágenes ni garantiza resultados concretos.
+</footer>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* =========================================================
+   DATOS DE LA BIBLIOTECA
+   40 categorías x 115 prompts = 4.600 prompts.
+   Se generan localmente; no requiere API.
+========================================================= */
+const categoriesData = [
+  {name:"Retratos profesionales",subject:"retrato profesional",scene:"un retrato expresivo con atención a los ojos y los rasgos naturales"},
+  {name:"Moda editorial",subject:"modelo de moda",scene:"una composición editorial de alta moda con estilismo sofisticado"},
+  {name:"Belleza y maquillaje",subject:"retrato de belleza",scene:"un primer plano de belleza que destaca el maquillaje y la textura natural de la piel"},
+  {name:"Fotografía de producto",subject:"producto comercial",scene:"una fotografía de producto cuidadosamente iluminada sobre un fondo controlado"},
+  {name:"Publicidad de lujo",subject:"producto de lujo",scene:"una campaña publicitaria premium con materiales elegantes y composición precisa"},
+  {name:"Paisajes naturales",subject:"paisaje natural",scene:"un paisaje amplio con profundidad atmosférica y elementos naturales detallados"},
+  {name:"Montañas y aventura",subject:"escena de montaña",scene:"un entorno montañoso monumental con una sensación de escala y aventura"},
+  {name:"Bosques y naturaleza",subject:"bosque natural",scene:"un bosque envolvente con vegetación rica y capas de profundidad"},
+  {name:"Playas y océanos",subject:"paisaje costero",scene:"una costa dramática con agua, arena y reflejos naturales"},
+  {name:"Fotografía urbana",subject:"escena urbana",scene:"una composición urbana con arquitectura y detalles cotidianos"},
+  {name:"Arquitectura moderna",subject:"arquitectura contemporánea",scene:"líneas arquitectónicas limpias, geometría precisa y materiales realistas"},
+  {name:"Interiores y decoración",subject:"interior de diseño",scene:"un interior cuidadosamente diseñado con texturas y distribución equilibradas"},
+  {name:"Fotografía callejera",subject:"escena callejera",scene:"un instante espontáneo de la vida urbana con narrativa visual"},
+  {name:"Viajes y culturas",subject:"escena de viaje",scene:"un destino evocador con detalles ambientales y sentido del lugar"},
+  {name:"Fotografía gastronómica",subject:"plato gastronómico",scene:"una presentación culinaria apetitosa con texturas visibles y luz controlada"},
+  {name:"Bebidas y coctelería",subject:"bebida de autor",scene:"una bebida elegante con condensación, reflejos y composición publicitaria"},
+  {name:"Fotografía macro",subject:"sujeto macro",scene:"un acercamiento extremo que revela detalles minúsculos y texturas complejas"},
+  {name:"Fauna salvaje",subject:"animal salvaje",scene:"un animal en su hábitat natural con comportamiento y textura realistas"},
+  {name:"Mascotas",subject:"mascota",scene:"una fotografía afectuosa y expresiva con atención a los ojos y el pelaje"},
+  {name:"Flores y botánica",subject:"composición botánica",scene:"flores y hojas con formas delicadas, texturas detalladas y profundidad suave"},
+  {name:"Deportes y acción",subject:"escena deportiva",scene:"un momento dinámico congelado con sensación de velocidad y energía"},
+  {name:"Automoción",subject:"automóvil",scene:"un vehículo con reflejos controlados, líneas definidas y presencia visual"},
+  {name:"Motocicletas",subject:"motocicleta",scene:"una motocicleta presentada con materiales detallados y una atmósfera dinámica"},
+  {name:"Bodas y celebraciones",subject:"escena de celebración",scene:"un instante emotivo con iluminación delicada y composición elegante"},
+  {name:"Fotografía familiar",subject:"retrato familiar",scene:"una escena familiar cálida, natural y espontánea"},
+  {name:"Fotografía infantil",subject:"retrato infantil",scene:"una escena infantil natural, luminosa y llena de expresión"},
+  {name:"Cine y cinematografía",subject:"escena cinematográfica",scene:"un fotograma de película con narrativa visual y composición dramática"},
+  {name:"Cyberpunk futurista",subject:"escena cyberpunk",scene:"una metrópolis futurista con neones, reflejos y detalles tecnológicos"},
+  {name:"Ciencia ficción",subject:"escena de ciencia ficción",scene:"un escenario futurista con tecnología avanzada y escala épica"},
+  {name:"Fantasía épica",subject:"escena de fantasía",scene:"un mundo fantástico con arquitectura monumental y atmósfera envolvente"},
+  {name:"Surrealismo artístico",subject:"composición surrealista",scene:"una composición onírica con asociaciones inesperadas y equilibrio visual"},
+  {name:"Arte conceptual",subject:"imagen conceptual",scene:"una idea visual abstracta expresada con simbolismo y composición intencional"},
+  {name:"Fotografía vintage",subject:"fotografía de estética vintage",scene:"una escena evocadora con carácter analógico y tonalidades nostálgicas"},
+  {name:"Blanco y negro",subject:"fotografía monocromática",scene:"una composición en blanco y negro que enfatiza luz, forma y textura"},
+  {name:"Minimalismo",subject:"composición minimalista",scene:"una imagen depurada con pocos elementos, espacio negativo y equilibrio"},
+  {name:"Fotografía nocturna",subject:"escena nocturna",scene:"una escena nocturna con puntos de luz y sombras cuidadosamente controladas"},
+  {name:"Conciertos y música",subject:"escena musical",scene:"un momento de actuación con luces escénicas, energía y movimiento"},
+  {name:"Fotografía de eventos",subject:"escena de evento",scene:"un instante significativo capturado con composición documental"},
+  {name:"Fotografía inmobiliaria",subject:"propiedad inmobiliaria",scene:"una estancia luminosa con líneas rectas y proporciones espaciales naturales"},
+  {name:"Fotografía experimental",subject:"composición experimental",scene:"una exploración visual creativa con perspectivas y recursos ópticos poco convencionales"}
+];
+
+const variations = [
+  "composición cinematográfica equilibrada",
+  "encuadre editorial refinado",
+  "perspectiva visual inmersiva",
+  "composición minimalista de gran impacto",
+  "narrativa visual espontánea",
+  "simetría geométrica cuidadosamente estudiada",
+  "perspectiva baja con sensación monumental",
+  "encuadre cercano con gran presencia del sujeto",
+  "capas de profundidad y separación visual",
+  "composición dinámica con líneas diagonales",
+  "espacio negativo elegante",
+  "perspectiva naturalista y documental",
+  "detalle visual sofisticado",
+  "encuadre panorámico con contexto ambiental",
+  "composición artística de estilo contemporáneo"
+];
+const newScenes = [
+  "con fondo desenfocado y profundidad de campo suave",
+  "con reflejos delicados sobre las superficies",
+  "con una atmósfera limpia y una composición ordenada",
+  "con sombras definidas y volumen tridimensional",
+  "con partículas sutiles iluminadas en el ambiente",
+  "con líneas de fuga que dirigen la mirada",
+  "con una distribución equilibrada de luces y sombras",
+  "con texturas visibles y materiales creíbles",
+  "con elementos en primer plano que aportan profundidad",
+  "con una escena rica en detalles ambientales",
+  "con un fondo de tonos suaves y discretos",
+  "con contraste entre áreas luminosas y oscuras",
+  "con una sensación de espacio y escala realista",
+  "con un instante expresivo y una narrativa clara",
+  "con una composición pulida de aspecto profesional"
+];
+const newTreatments = [
+  "acabado editorial de alta calidad",
+  "tratamiento cinematográfico de color",
+  "realismo fotográfico natural",
+  "acabado publicitario premium",
+  "estética artística contemporánea",
+  "tonalidad analógica delicada",
+  "contraste equilibrado y detalle fino",
+  "atmósfera visual evocadora",
+  "acabado limpio y sofisticado",
+  "texturas orgánicas y naturales",
+  "iluminación profesional controlada",
+  "colorimetría coherente y armoniosa",
+  "acabado visual de revista",
+  "detalle nítido sin sobreprocesado",
+  "estética moderna con intención creativa"
+];
+const lightingStyles = [
+  "luz natural suave",
+  "luz lateral dramática",
+  "contraluz dorado",
+  "luz difusa de estudio",
+  "iluminación ambiental cinematográfica",
+  "sombras suaves con volumen",
+  "iluminación de alto contraste",
+  "luz de atardecer cálida",
+  "luz fría de ambiente",
+  "reflejos controlados de estudio",
+  "iluminación volumétrica sutil",
+  "luz de ventana",
+  "iluminación de neón",
+  "luz de contorno",
+  "iluminación suave y uniforme"
+];
+const colorStyles = [
+  "paleta azul y violeta",
+  "tonos tierra naturales",
+  "colores cálidos y dorados",
+  "tonos fríos y elegantes",
+  "blanco y negro de alto contraste",
+  "colores pastel",
+  "rojos y negros intensos",
+  "tonos verdes y naturales",
+  "paleta cinematográfica azul y naranja",
+  "colores neutros",
+  "colores vibrantes",
+  "monocromo elegante",
+  "magenta y cian",
+  "tonos crema y beige",
+  "contraste cromático controlado"
+];
+const cameraStyles = [
+  "capturada con una cámara profesional de alta resolución",
+  "capturada con una óptica de retrato de 85 mm",
+  "capturada con un objetivo de 50 mm",
+  "capturada con gran angular de 24 mm",
+  "capturada con teleobjetivo y compresión de perspectiva",
+  "capturada con óptica macro de gran detalle",
+  "capturada con cámara cinematográfica digital",
+  "capturada con estética analógica de 35 mm",
+  "capturada con una óptica anamórfica",
+  "capturada con un objetivo de 35 mm",
+  "capturada con enfoque selectivo",
+  "capturada con profundidad de campo amplia",
+  "capturada con perspectiva arquitectónica corregida",
+  "capturada con una cámara de formato medio",
+  "capturada con una óptica de carácter artístico"
+];
+
+const all = [];
+categoriesData.forEach((cat, catIndex) => {
+  for (let i = 0; i < 115; i++) {
+    const n = i + 1;
+    const a = variations[i % variations.length];
+    const b = newScenes[(i * 7 + catIndex * 3) % newScenes.length];
+    const c = newTreatments[(i * 5 + catIndex * 2) % newTreatments.length];
+    const l = lightingStyles[(i * 3 + catIndex) % lightingStyles.length];
+    const col = colorStyles[(i * 11 + catIndex) % colorStyles.length];
+    const cam = cameraStyles[(i * 13 + catIndex * 2) % cameraStyles.length];
+    all.push({
+      id: catIndex * 115 + n,
+      category: cat.name,
+      title: `${cat.name} · ${String(n).padStart(3,"0")}`,
+      prompt: `${cat.scene}. ${a}; ${b}. Iluminación: ${l}. Color: ${col}. ${cam}. ${c}. Calidad profesional, detalle coherente, composición intencional y acabado visual cuidado.`,
+      type:"library"
+    });
+  }
+});
+
+/* =========================================================
+   ALMACENAMIENTO LOCAL
+========================================================= */
+const STORAGE = {
+  favorites:"fotoprompt_studio_favorites_v2",
+  history:"fotoprompt_studio_history_v2"
+};
+function readStore(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch(e) { return []; }
+}
+function writeStore(key,value) {
+  try {
+    localStorage.setItem(key,JSON.stringify(value));
+    return true;
+  } catch(e) {
+    showToast("No se pudo guardar. Comprueba el espacio disponible del navegador.");
+    return false;
+  }
+}
+let favorites = readStore(STORAGE.favorites);
+let historyItems = readStore(STORAGE.history);
+let visibleCount = 24;
+let activePreset = "Cinematográfico";
+let toastTimer;
+
+function showToast(message) {
+  const el = document.getElementById("toast");
+  el.textContent = message;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("show"),2400);
+}
+async function copyText(text) {
+  if (!text) { showToast("No hay texto para copiar."); return; }
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast("Prompt copiado al portapapeles.");
+  } catch(e) {
+    const temp = document.createElement("textarea");
+    temp.value = text;
+    temp.style.position="fixed";
+    temp.style.opacity="0";
+    document.body.appendChild(temp);
+    temp.select();
+    let ok=false;
+    try { ok=document.execCommand("copy"); } catch(err) {}
+    temp.remove();
+    showToast(ok ? "Prompt copiado al portapapeles." : "No se pudo copiar automáticamente. Selecciona el texto y cópialo.");
+  }
+}
+function downloadText(filename,text) {
+  const blob = new Blob([text],{type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g,ch=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[ch]));
+}
+function updateStats() {
+  document.getElementById("totalStat").textContent=all.length.toLocaleString("es-ES");
+  document.getElementById("categoryStat").textContent=categoriesData.length;
+  document.getElementById("favoriteStat").textContent=favorites.length;
+}
+function addHistory(item) {
+  const record={
+    id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+    title:item.title || "Prompt personalizado",
+    category:item.category || "Creador Pro",
+    prompt:item.prompt,
+    date:new Date().toISOString()
+  };
+  historyItems.unshift(record);
+  historyItems=historyItems.slice(0,100);
+  writeStore(STORAGE.history,historyItems);
+  renderHistory();
+}
+function isFavorite(item) {
+  return favorites.some(f=>f.key===item.key);
+}
+function toggleFavorite(item) {
+  const key=item.key || (item.type==="library" ? "lib-"+item.id : "custom-"+item.prompt);
+  const exists=favorites.some(f=>f.key===key);
+  if(exists) {
+    favorites=favorites.filter(f=>f.key!==key);
+    showToast("Eliminado de favoritos.");
+  } else {
+    favorites.unshift({
+      key,title:item.title || "Prompt personalizado",
+      category:item.category || "Creador Pro",
+      prompt:item.prompt
+    });
+    showToast("Añadido a favoritos.");
+  }
+  writeStore(STORAGE.favorites,favorites);
+  updateStats();
+  renderLibrary();
+  renderFavorites();
+}
+function makeCard(item,options={}) {
+  const key=item.key || (item.type==="library" ? "lib-"+item.id : "custom-"+item.prompt);
+  const fav=isFavorite({...item,key});
+  const text=escapeHTML(item.prompt);
+  const title=escapeHTML(item.title || "Prompt personalizado");
+  const category=escapeHTML(item.category || "Creador Pro");
+  const removable=options.removable || "";
+  return `<article class="prompt-card">
+    <div class="card-top"><div><span class="category-label">${category}</span><h3>${title}</h3></div></div>
+    <div class="card-text collapsed" data-prompt-text>${text}</div>
+    <div class="card-actions">
+      <button class="icon-btn" data-action="copy" data-key="${escapeHTML(key)}">▣ Copiar</button>
+      <button class="icon-btn" data-action="expand">↕ Mostrar completo</button>
+      <button class="icon-btn ${fav?"fav":""}" data-action="favorite" data-key="${escapeHTML(key)}">${fav?"♥ Guardado":"♡ Favorito"}</button>
+      ${removable?`<button class="icon-btn" data-action="${removable}" data-key="${escapeHTML(key)}">✕ Quitar</button>`:""}
+      ${options.useCreator?`<button class="icon-btn" data-action="use-creator" data-key="${escapeHTML(key)}">✦ Abrir en creador</button>`:""}
+    </div>
+  </article>`;
+}
+function findItem(key) {
+  const lib=all.find(item=>"lib-"+item.id===key);
+  if(lib) return {...lib,key:"lib-"+lib.id};
+  return favorites.find(item=>item.key===key) ||
+         historyItems.find(item=>item.key===key) || null;
+}
+function bindCardActions(root) {
+  root.querySelectorAll("[data-action]").forEach(button=>{
+    button.addEventListener("click",()=>{
+      const action=button.dataset.action;
+      const card=button.closest(".prompt-card");
+      const key=button.dataset.key;
+      if(action==="expand") {
+        const txt=card.querySelector("[data-prompt-text]");
+        const collapsed=txt.classList.toggle("collapsed");
+        button.textContent=collapsed?"↕ Mostrar completo":"↕ Mostrar menos";
+      }
+      if(action==="copy") {
+        const item=findItem(key);
+        if(item) { copyText(item.prompt); addHistory(item); }
+      }
+      if(action==="favorite") {
+        const item=findItem(key);
+        if(item) toggleFavorite(item);
+        else {
+          const txt=card.querySelector("[data-prompt-text]").textContent;
+          toggleFavorite({key,title:"Prompt",category:"Personalizado",prompt:txt});
+        }
+      }
+      if(action==="remove-favorite") {
+        favorites=favorites.filter(f=>f.key!==key);
+        writeStore(STORAGE.favorites,favorites); updateStats(); renderFavorites(); renderLibrary();
+      }
+      if(action==="remove-history") {
+        historyItems=historyItems.filter(h=>h.id!==key);
+        writeStore(STORAGE.history,historyItems); renderHistory();
+      }
+      if(action==="use-creator") {
+        const item=findItem(key);
+        if(item) {
+          document.getElementById("creatorOutput").value=item.prompt;
+          updateWordCount(); switchPage("creator");
+          showToast("Prompt cargado en el creador.");
+        }
+      }
+    });
+  });
+}
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+function switchPage(id) {
+  document.querySelectorAll(".tab").forEach(tab=>{
+    tab.classList.toggle("active",tab.dataset.page===id);
+  });
+  document.querySelectorAll(".page").forEach(page=>{
+    page.classList.toggle("active",page.id===id);
+  });
+  if(id==="favorites") renderFavorites();
+  if(id==="history") renderHistory();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click",()=>switchPage(tab.dataset.page));
+});
+
+/* =========================================================
+   BIBLIOTECA Y FILTROS
+========================================================= */
+const categoryFilter=document.getElementById("categoryFilter");
+categoriesData.forEach(cat=>{
+  const opt=document.createElement("option");
+  opt.value=cat.name; opt.textContent=cat.name;
+  categoryFilter.appendChild(opt);
+});
+function filteredLibrary() {
+  const q=document.getElementById("search").value.trim().toLocaleLowerCase("es");
+  const cat=categoryFilter.value;
+  const order=document.getElementById("sortOrder").value;
+  let items=all.filter(item=>
+    (cat==="all" || item.category===cat) &&
+    (!q || (item.title+" "+item.category+" "+item.prompt).toLocaleLowerCase("es").includes(q))
+  );
+  items.sort((a,b)=>{
+    const result=a.title.localeCompare(b.title,"es",{sensitivity:"base"});
+    return order==="za"?-result:result;
+  });
+  return items;
+}
+function renderLibrary() {
+  const items=filteredLibrary();
+  const slice=items.slice(0,visibleCount);
+  const root=document.getElementById("libraryCards");
+  root.innerHTML=slice.map(item=>makeCard(item,{useCreator:true})).join("");
+  bindCardActions(root);
+  document.getElementById("resultsMeta").textContent=
+    `Mostrando ${slice.length.toLocaleString("es-ES")} de ${items.length.toLocaleString("es-ES")} resultados`;
+  document.getElementById("libraryEmpty").hidden=items.length!==0;
+  document.getElementById("loadMore").hidden=slice.length>=items.length;
+}
+["search","categoryFilter","sortOrder"].forEach(id=>{
+  document.getElementById(id).addEventListener(id==="search"?"input":"change",()=>{
+    visibleCount=24; renderLibrary();
+  });
+});
+document.getElementById("loadMore").addEventListener("click",()=>{
+  visibleCount+=24; renderLibrary();
+});
+
+/* =========================================================
+   FAVORITOS E HISTORIAL
+========================================================= */
+function renderFavorites() {
+  const q=document.getElementById("favoriteSearch").value.trim().toLocaleLowerCase("es");
+  const items=favorites.filter(item=>(item.title+" "+item.category+" "+item.prompt).toLocaleLowerCase("es").includes(q));
+  const root=document.getElementById("favoriteCards");
+  root.innerHTML=items.map(item=>makeCard(item,{removable:"remove-favorite",useCreator:true})).join("");
+  bindCardActions(root);
+  document.getElementById("favoriteEmpty").hidden=items.length>0;
+}
+function renderHistory() {
+  const q=document.getElementById("historySearch").value.trim().toLocaleLowerCase("es");
+  const items=historyItems.filter(item=>(item.title+" "+item.category+" "+item.prompt).toLocaleLowerCase("es").includes(q));
+  const root=document.getElementById("historyCards");
+  root.innerHTML=items.map(item=>{
+    const card=makeCard({...item,key:item.id},{removable:"remove-history",useCreator:true});
+    return card.replace(`data-key="${escapeHTML(item.id)}"`,`data-key="${escapeHTML(item.id)}"`);
+  }).join("");
+  bindCardActions(root);
+  document.getElementById("historyEmpty").hidden=items.length>0;
+}
+document.getElementById("favoriteSearch").addEventListener("input",renderFavorites);
+document.getElementById("historySearch").addEventListener("input",renderHistory);
+document.getElementById("clearFavorites").addEventListener("click",()=>{
+  if(!favorites.length) return showToast("No hay favoritos que borrar.");
+  if(confirm("¿Quieres borrar todos los favoritos guardados en este navegador?")) {
+    favorites=[]; writeStore(STORAGE.favorites,favorites); updateStats(); renderFavorites(); renderLibrary();
+  }
+});
+document.getElementById("clearHistory").addEventListener("click",()=>{
+  if(!historyItems.length) return showToast("El historial ya está vacío.");
+  if(confirm("¿Quieres borrar todo el historial de este navegador?")) {
+    historyItems=[]; writeStore(STORAGE.history,historyItems); renderHistory();
+  }
+});
+
+/* =========================================================
+   PRESETS DEL CREADOR
+========================================================= */
+const presets = {
+  "Cinematográfico":{
+    style:"cine de autor",lighting:"iluminación ambiental cinematográfica",
+    palette:"paleta cinematográfica azul y naranja",mood:"épico y grandioso",
+    contrast:"contraste cinematográfico equilibrado"
+  },
+  "Realista":{
+    style:"fotografía fotorrealista",lighting:"luz natural ambiental",
+    palette:"colores naturales fieles",mood:"natural y documental",
+    contrast:"contraste suave y delicado"
+  },
+  "Editorial":{
+    style:"editorial de alta moda",lighting:"flash editorial directo",
+    palette:"colores neutros y elegantes",mood:"elegante y sofisticado",
+    contrast:"alto contraste dramático"
+  },
+  "Cyberpunk":{
+    style:"estética cyberpunk",lighting:"luz de neón azul y violeta",
+    palette:"cian y magenta futuristas",mood:"futurista y tecnológico",
+    contrast:"sombras profundas y negros ricos"
+  },
+  "Lujo":{
+    style:"campaña publicitaria de lujo",lighting:"iluminación de producto de alta gama",
+    palette:"verde esmeralda y oro",mood:"lujoso y exclusivo",
+    contrast:"contraste cinematográfico equilibrado"
+  },
+  "Fantasía":{
+    style:"fantasía épica",lighting:"iluminación volumétrica con rayos visibles",
+    palette:"colores vibrantes y saturados",mood:"onírico y surrealista",
+    contrast:"rango dinámico amplio"
+  },
+  "Vintage":{
+    style:"fotografía analógica vintage",lighting:"luz cálida de atardecer",
+    palette:"tonos cálidos dorados",mood:"melancólico y contemplativo",
+    contrast:"tonalidad luminosa de bajo contraste"
+  },
+  "Minimalista":{
+    style:"minimalismo contemporáneo",lighting:"luz difusa de estudio",
+    palette:"monocromo minimalista",mood:"sereno y minimalista",
+    contrast:"contraste suave y delicado"
+  }
+};
+function selectValue(id,value) {
+  const el=document.getElementById(id);
+  if(!el) return;
+  const option=[...el.options].find(o=>o.text===value || o.value===value);
+  if(option) el.value=option.value;
+}
+function applyPreset(name) {
+  const p=presets[name];
+  if(!p) return;
+  activePreset=name;
+  selectValue("style",p.style);
+  selectValue("lighting",p.lighting);
+  selectValue("palette",p.palette);
+  selectValue("mood",p.mood);
+  selectValue("contrast",p.contrast);
+  document.querySelectorAll(".preset").forEach(el=>el.classList.toggle("selected",el.dataset.preset===name));
+  generatePrompt();
+}
+function renderPresets() {
+  const icons={"Cinematográfico":"🎬","Realista":"📷","Editorial":"👗","Cyberpunk":"🌃","Lujo":"◆","Fantasía":"✧","Vintage":"🎞","Minimalista":"◻"};
+  const descriptions={
+    "Cinematográfico":"Narrativa de película",
+    "Realista":"Luz y texturas naturales",
+    "Editorial":"Moda y revistas",
+    "Cyberpunk":"Neón futurista",
+    "Lujo":"Publicidad premium",
+    "Fantasía":"Mundos imaginarios",
+    "Vintage":"Carácter analógico",
+    "Minimalista":"Sencillez y equilibrio"
+  };
+  const root=document.getElementById("presetGrid");
+  root.innerHTML=Object.keys(presets).map(name=>
+    `<button class="preset ${name===activePreset?"selected":""}" data-preset="${escapeHTML(name)}"><strong>${icons[name]} ${escapeHTML(name)}</strong><span>${descriptions[name]}</span></button>`
+  ).join("");
+  root.querySelectorAll("[data-preset]").forEach(btn=>btn.addEventListener("click",()=>applyPreset(btn.dataset.preset)));
+}
+
+/* =========================================================
+   GENERACIÓN DEL PROMPT
+========================================================= */
+function valueOf(id) {
+  const el=document.getElementById(id);
+  return el ? el.value.trim() : "";
+}
+function buildPrompt() {
+  const subject=valueOf("subject") || "una escena fotográfica";
+  const details=valueOf("details");
+  const creativity=valueOf("creativity");
+  const creativityText={
+    natural:"Priorizar naturalidad, plausibilidad visual y detalles discretos.",
+    balanced:"Equilibrar realismo, fuerza visual y creatividad.",
+    high:"Explorar una estética expresiva, detalles llamativos y composición creativa.",
+    experimental:"Adoptar un enfoque experimental, perspectivas atrevidas y una interpretación visual inesperada."
+  }[creativity] || "";
+  const parts=[
+    `${valueOf("photoType")}: ${subject}.`,
+    `Escenario: ${valueOf("location")}.`,
+    `Momento y atmósfera: ${valueOf("time")}; ${valueOf("weather")}.`,
+    details ? `Detalles adicionales: ${details}.` : "",
+    `Encuadre: ${valueOf("framing")}; ${valueOf("pose")}.`,
+    `Equipo fotográfico sugerido: ${valueOf("camera")}, ${valueOf("lens")}, ${valueOf("aperture")}; ${valueOf("focus")}.`,
+    `Iluminación: ${valueOf("lighting")}.`,
+    `Paleta cromática: ${valueOf("palette")}; ${valueOf("contrast")}.`,
+    `Dirección artística: ${valueOf("style")}; ${valueOf("mood")}.`,
+    `Texturas y acabado: ${valueOf("texture")}; ${valueOf("quality")}.`,
+    `Formato de imagen ${valueOf("aspect")}.`,
+    creativityText,
+    valueOf("identity")
+  ].filter(Boolean);
+  if(document.getElementById("includeNegative").checked && valueOf("negative")) {
+    parts.push("Prompt negativo: "+valueOf("negative")+".");
+  }
+  let prompt=parts.join(" ");
+  if(valueOf("language")==="en") prompt=translatePrompt(prompt);
+  return prompt;
+}
+function translatePrompt(text) {
+  const dictionary=[
+    ["Retrato","Portrait"],["Moda","Fashion"],["Producto","Product"],["Paisaje","Landscape"],
+    ["Arquitectura","Architecture"],["Fotografía","Photography"],["retrato profesional","professional portrait"],
+    ["primer plano","close-up"],["plano medio","medium shot"],["plano entero","full-body shot"],
+    ["gran plano general","wide establishing shot"],["estudio fotográfico profesional","professional photo studio"],
+    ["calle urbana contemporánea","contemporary urban street"],["bosque frondoso","lush forest"],
+    ["playa tropical","tropical beach"],["montañas majestuosas","majestic mountains"],
+    ["hora dorada al atardecer","golden hour at sunset"],["amanecer suave","soft sunrise"],
+    ["noche urbana","urban night"],["niebla cinematográfica","cinematic fog"],
+    ["cámara profesional de formato completo","professional full-frame camera"],
+    ["objetivo de 35 mm","35 mm lens"],["objetivo de 50 mm","50 mm lens"],
+    ["objetivo de 85 mm para retrato","85 mm portrait lens"],["primerísimo primer plano","extreme close-up"],
+    ["pose natural y espontánea","natural candid pose"],["pose editorial elegante","elegant editorial pose"],
+    ["luz suave de ventana","soft window light"],["luz lateral dramática","dramatic side lighting"],
+    ["luz cálida de atardecer","warm sunset light"],["luz natural ambiental","natural ambient light"],
+    ["azul eléctrico y violeta","electric blue and violet"],["tonos cálidos dorados","warm golden tones"],
+    ["blanco y negro de alto contraste","high-contrast black and white"],
+    ["fotografía fotorrealista","photorealistic photography"],["cine de autor","art-house cinema"],
+    ["editorial de alta moda","high-fashion editorial"],["estética cyberpunk","cyberpunk aesthetic"],
+    ["fantasía épica","epic fantasy"],["minimalismo contemporáneo","contemporary minimalism"],
+    ["elegante y sofisticado","elegant and sophisticated"],["futurista y tecnológico","futuristic and technological"],
+    ["detalle profesional de alta resolución","professional high-resolution detail"],
+    ["texturas naturales realistas","realistic natural textures"],["contraste cinematográfico equilibrado","balanced cinematic contrast"],
+    ["formato de imagen","image aspect ratio"],["Prompt negativo","Negative prompt"],
+    ["mantener","maintain"],["persona","person"],["una persona","a person"],
+    ["iluminación","lighting"],["escenario","setting"],["composición","composition"],
+    ["acabado","finish"],["calidad profesional","professional quality"],
+    ["detalle coherente","coherent detail"],["acabado visual cuidado","carefully polished visual finish"],
+    ["luz natural","natural light"],["sombras","shadows"],["reflejos","reflections"],
+    ["textura","texture"],["enfoque","focus"],["profundidad de campo","depth of field"]
+  ];
+  let result=text;
+  dictionary.sort((a,b)=>b[0].length-a[0].length).forEach(([es,en])=>{
+    result=result.split(es).join(en);
+  });
+  return result;
+}
+function updateWordCount() {
+  const text=valueOf("creatorOutput");
+  const count=text.trim()?text.trim().split(/\s+/).length:0;
+  document.getElementById("creatorWordCount").textContent=`${count} palabras`;
+}
+function generatePrompt() {
+  document.getElementById("creatorOutput").value=buildPrompt();
+  updateWordCount();
+}
+function currentCreatorItem() {
+  return {
+    title:(valueOf("subject") || "Prompt personalizado").slice(0,80),
+    category:"Creador Pro",
+    prompt:valueOf("creatorOutput"),
+    key:"custom-"+valueOf("creatorOutput")
+  };
+}
+document.getElementById("generateBtn").addEventListener("click",()=>{
+  generatePrompt(); showToast("Prompt generado.");
+});
+document.getElementById("variationBtn").addEventListener("click",()=>{
+  const extra=[
+    "con un encuadre alternativo y una perspectiva ligeramente diferente",
+    "con iluminación más dramática y mayor profundidad visual",
+    "con una composición más limpia y un fondo más sencillo",
+    "con una interpretación artística más atrevida",
+    "con una atmósfera más natural y espontánea",
+    "con una paleta cromática alternativa que mantenga la coherencia"
+  ];
+  const base=buildPrompt();
+  document.getElementById("creatorOutput").value=base+" "+extra[Math.floor(Math.random()*extra.length)]+".";
+  updateWordCount(); showToast("Nueva variación creada.");
+});
+document.getElementById("copyCreator").addEventListener("click",()=>{
+  const item=currentCreatorItem();
+  if(item.prompt) { copyText(item.prompt); addHistory(item); }
+  else showToast("Genera primero un prompt.");
+});
+document.getElementById("downloadCreator").addEventListener("click",()=>{
+  const item=currentCreatorItem();
+  if(!item.prompt) return showToast("Genera primero un prompt.");
+  downloadText("fotoprompt-studio.txt",item.prompt);
+  addHistory(item);
+  showToast("Archivo TXT preparado.");
+});
+document.getElementById("saveCreatorFavorite").addEventListener("click",()=>{
+  const item=currentCreatorItem();
+  if(!item.prompt) return showToast("Genera primero un prompt.");
+  toggleFavorite(item);
+});
+document.getElementById("saveCreatorHistory").addEventListener("click",()=>{
+  const item=currentCreatorItem();
+  if(!item.prompt) return showToast("Genera primero un prompt.");
+  addHistory(item); showToast("Guardado en el historial.");
+});
+document.getElementById("clearCreator").addEventListener("click",()=>{
+  if(!confirm("¿Restablecer las opciones del creador?")) return;
+  document.getElementById("subject").value="";
+  document.getElementById("details").value="";
+  document.getElementById("negative").value="";
+  document.getElementById("includeNegative").checked=false;
+  ["photoType","framing","pose","camera","lens","aperture","focus","location","time","weather","lighting","palette","contrast","mood","style","texture","quality","aspect","creativity","language","identity"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.selectedIndex=0;
+  });
+  activePreset="";
+  document.querySelectorAll(".preset").forEach(el=>el.classList.remove("selected"));
+  generatePrompt(); showToast("Opciones restablecidas.");
+});
+document.getElementById("creatorOutput").addEventListener("input",updateWordCount);
+
+/* Cambios en los controles: actualizan la vista previa automáticamente. */
+document.querySelectorAll("#creator .field input,#creator .field select,#creator #includeNegative").forEach(el=>{
+  el.addEventListener("change",generatePrompt);
+  if(el.tagName==="INPUT" && el.type!=="checkbox") el.addEventListener("input",()=>{
+    if(el.id==="subject" || el.id==="details" || el.id==="negative") generatePrompt();
+  });
+});
+
+/* =========================================================
+   INICIALIZACIÓN
+========================================================= */
+function init() {
+  renderPresets();
+  updateStats();
+  renderLibrary();
+  renderFavorites();
+  renderHistory();
+  generatePrompt();
+}
+init();
+</script>
+</body>
+</html>
