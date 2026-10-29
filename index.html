@@ -1,0 +1,753 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b18">
+<meta name="description" content="Biblioteca gratuita de 1000 prompts de fotografía profesional.">
+<title>FotoPrompt Studio | Biblioteca profesional</title>
+<style>
+:root {
+  --bg:#090b18;
+  --panel:#12172b;
+  --panel2:#191f39;
+  --border:#30385d;
+  --text:#f4f5ff;
+  --muted:#aab3d2;
+  --blue:#42d5ff;
+  --purple:#a578ff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:
+  radial-gradient(ellipse at 80% 0%,#26205b 0,transparent 40%),
+  var(--bg);color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;line-height:1.6
+}
+header{
+  text-align:center;padding:55px 18px 35px;
+  border-bottom:1px solid var(--border)
+}
+.eyebrow{color:var(--blue);letter-spacing:3px;font-size:12px;font-weight:bold}
+h1{font-size:clamp(34px,6vw,65px);margin:12px 0;line-height:1.1}
+h1 span{
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+  color:transparent;background-clip:text
+}
+header p{max-width:720px;margin:16px auto;color:var(--muted)}
+.stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:24px}
+.stat{background:var(--panel);border:1px solid var(--border);
+  padding:10px 17px;border-radius:12px}
+.stat strong{color:var(--blue)}
+main{max-width:1250px;margin:auto;padding:25px 18px 55px}
+.controls{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+input,select{
+  width:100%;padding:14px;border-radius:12px;
+  border:1px solid var(--border);background:var(--panel);
+  color:var(--text);font-size:15px;min-width:0
+}
+input:focus,select:focus{outline:2px solid var(--purple)}
+.categories{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0}
+.category{
+  background:var(--panel);border:1px solid var(--border);
+  color:var(--text);border-radius:20px;padding:8px 12px;
+  cursor:pointer
+}
+.category:hover,.category.active{
+  background:#382b68;border-color:var(--purple)
+}
+.results-head{display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;margin:20px 0}
+#count{font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.card{
+  background:linear-gradient(145deg,var(--panel),#0e1223);
+  border:1px solid var(--border);border-radius:16px;padding:18px;
+  display:flex;flex-direction:column;min-width:0
+}
+.card h2{font-size:17px;line-height:1.4;margin:0 0 10px}
+.tag{font-size:11px;color:#d9c9ff;margin-bottom:10px}
+.prompt{color:#d2d9f0;font-size:14px;overflow-wrap:anywhere;flex:1}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button.action,.main-button{
+  padding:9px 13px;border-radius:9px;cursor:pointer;
+  color:var(--text);background:var(--panel2);
+  border:1px solid var(--border)
+}
+button.action.primary,.main-button{
+  background:linear-gradient(100deg,#475dd3,#8850d5);
+  border:0
+}
+button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.empty{text-align:center;color:var(--muted);padding:35px;display:none}
+.notice{
+  padding:13px 15px;border:1px solid #234d70;border-radius:12px;
+  color:#c9edff;background:#101d30;margin-bottom:20px;font-size:13px
+}
+footer{text-align:center;border-top:1px solid var(--border);
+  padding:24px;color:var(--muted);font-size:13px}
+@media(max-width:700px){
+  .controls,.grid{grid-template-columns:1fr}
+  header{padding-top:35px}main{padding-inline:12px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">CREATIVIDAD · TÉCNICA · INSPIRACIÓN</div>
+  <h1>FotoPrompt <span>Studio</span></h1>
+  <p>
+    Tu biblioteca de fotografía profesional. Descubre ideas para retratos,
+    publicidad, moda, naturaleza, arquitectura y mucho más.
+    Busca, explora y copia tus prompts favoritos.
+  </p>
+  <div class="stats">
+    <div class="stat"><strong id="total">1000</strong> prompts</div>
+    <div class="stat"><strong>25</strong> categorías</div>
+    <div class="stat"><strong>Gratis</strong> para explorar</div>
+  </div>
+</header>
+
+<main>
+  <div class="notice">
+    Los prompts son puntos de partida creativos. Puedes adaptarlos a tu cámara,
+    iluminación, localización o generador de imágenes favorito.
+  </div>
+
+  <div class="controls">
+    <input id="search" type="search"
+      placeholder="Buscar tema, estilo, iluminación o palabra..."
+      aria-label="Buscar prompts">
+    <select id="sort" aria-label="Orden de los resultados">
+      <option value="original">Orden original</option>
+      <option value="az">Categoría A–Z</option>
+      <option value="za">Categoría Z–A</option>
+    </select>
+  </div>
+
+  <nav class="categories" id="categories" aria-label="Categorías"></nav>
+
+  <div class="results-head">
+    <strong>Biblioteca profesional</strong>
+    <span id="count" aria-live="polite"></span>
+  </div>
+
+  <section id="grid" class="grid"></section>
+  <div id="empty" class="empty">No hay resultados. Prueba otra búsqueda.</div>
+
+  <div class="results-head">
+    <button class="main-button" id="more">Cargar más prompts</button>
+    <button class="action" id="export">Exportar resultados TXT</button>
+  </div>
+</main>
+
+<footer>
+  FotoPrompt Studio · Biblioteca creativa · Preparada para GitHub Pages
+</footer>
+
+<script>
+"use strict";
+
+/*
+  25 categorías x 40 combinaciones = 1000 prompts.
+  Cada combinación usa un sujeto y una localización propios
+  de la categoría, además de variables fotográficas.
+*/
+
+const data = [
+{
+name:"Retrato editorial",
+subjects:[
+"una escritora de novela negra","un chef de alta cocina",
+"una bailarina contemporánea","un arquitecto minimalista"
+],
+scenes:[
+"en un teatro vacío","junto a una ventana lluviosa",
+"en una biblioteca antigua","en una azotea al amanecer",
+"en un estudio de paredes neutras","en un taller creativo",
+"en un pasillo de hormigón","en una estación ferroviaria",
+"en un jardín de invierno","en un café histórico"
+],
+style:"Retrato editorial con expresión natural, personalidad auténtica y narrativa visual."
+},
+{
+name:"Belleza y maquillaje",
+subjects:[
+"un rostro con pecas naturales","una modelo de piel madura",
+"un maquillaje gráfico azul","un rostro con sombras metálicas"
+],
+scenes:[
+"sobre fondo rosa empolvado","ante un ciclorama gris perla",
+"con reflejos de cristal","en un set verde salvia",
+"frente a terciopelo negro","con pétalos translúcidos",
+"junto a espejos curvos","bajo una estructura geométrica",
+"con pigmentos minerales","sobre un fondo blanco puro"
+],
+style:"Fotografía beauty de alta resolución, piel realista y retoque editorial que conserva la textura."
+},
+{
+name:"Moda y alta costura",
+subjects:[
+"un vestido escultórico de organza","un traje sastre oversize",
+"una capa de plumas estructuradas","un abrigo voluminoso de lana"
+],
+scenes:[
+"en una escalera brutalista","en un palacio modernista",
+"sobre una pasarela reflectante","en un invernadero metálico",
+"en dunas de arena oscura","en una galería de arte",
+"entre cortinas monumentales","en un tejado industrial",
+"en una plaza de piedra","en un estudio monocromo"
+],
+style:"Editorial de moda conceptual, silueta bien definida, textiles detallados y estilismo de alta gama."
+},
+{
+name:"Producto comercial",
+subjects:[
+"un reloj mecánico de titanio","unos auriculares de diseño",
+"una cámara analógica compacta","unas gafas de sol de acetato"
+],
+scenes:[
+"sobre piedra negra","en una caja de luz blanca",
+"sobre acrílico translúcido","entre metal cepillado",
+"suspendido ante un fondo neutro","sobre vidrio ahumado",
+"en una plataforma geométrica","junto a gotas de agua",
+"sobre arena fina","en un escenario de espejos"
+],
+style:"Fotografía publicitaria de producto, materiales físicamente creíbles, contornos limpios y reflejos controlados."
+},
+{
+name:"Perfumería y cosmética",
+subjects:[
+"un sérum facial con gotero","un perfume cítrico",
+"un aceite corporal dorado","una crema facial de textura rica"
+],
+scenes:[
+"rodeado de pétalos frescos","sobre travertino húmedo",
+"entre láminas de agua","junto a hojas de eucalipto",
+"sobre vidrio tintado","en una composición mineral",
+"con cáscaras de cítricos","junto a seda arrugada",
+"en una superficie perlada","entre cristales transparentes"
+],
+style:"Campaña de cosmética premium, líquidos realistas, microdetalles y composición sensorial elegante."
+},
+{
+name:"Gastronomía",
+subjects:[
+"un risotto de setas silvestres","una tarta de cítricos glaseada",
+"un ramen con caldo brillante","un postre de chocolate y sal marina"
+],
+scenes:[
+"en una mesa de roble","sobre lino crudo",
+"en una cocina profesional","en una barra de piedra oscura",
+"junto a una ventana campestre","sobre cerámica artesanal",
+"en una mesa de mármol","en un patio mediterráneo",
+"entre utensilios de cobre","sobre una bandeja de pizarra"
+],
+style:"Fotografía gastronómica editorial, ingredientes apetecibles, textura natural y color fiel sin saturación artificial."
+},
+{
+name:"Arquitectura",
+subjects:[
+"un museo de hormigón visto","una vivienda de patio interior",
+"una biblioteca de geometría curva","un puente peatonal escultórico"
+],
+scenes:[
+"bajo cielo uniforme","durante la hora azul",
+"con sombras de mediodía","desde un punto de vista bajo",
+"con vegetación en primer plano","después de la lluvia",
+"en una plaza vacía","con niebla ligera",
+"desde un eje perfectamente centrado","con reflejos en el agua"
+],
+style:"Fotografía arquitectónica profesional, verticales corregidas, perspectiva precisa y materiales realistas."
+},
+{
+name:"Interiores y decoración",
+subjects:[
+"un salón japandi de madera clara","una cocina de mármol verde",
+"un dormitorio de hotel boutique","un estudio doméstico minimalista"
+],
+scenes:[
+"con luz matinal diagonal","en una tarde lluviosa",
+"con cortinas translúcidas","con muebles vintage",
+"desde la entrada principal","desde una esquina elevada",
+"con una chimenea encendida","junto a grandes ventanales",
+"con plantas de interior","con iluminación ambiental nocturna"
+],
+style:"Fotografía de interiorismo para revista, distribución legible, materiales auténticos y verticales rectas."
+},
+{
+name:"Paisajes naturales",
+subjects:[
+"un valle glaciar con lago turquesa","un bosque de hayas con niebla",
+"un acantilado volcánico","una pradera alpina de flores"
+],
+scenes:[
+"antes de salir el sol","tras una tormenta de verano",
+"en una mañana fría","bajo nubes dramáticas",
+"durante el crepúsculo","con bruma baja",
+"en plena estación otoñal","después de una nevada",
+"con nubes reflejadas en el agua","durante una lluvia fina"
+],
+style:"Paisaje natural realista, rango tonal amplio, profundidad atmosférica y color sin HDR exagerado."
+},
+{
+name:"Fauna salvaje",
+subjects:[
+"un zorro ártico en invierno","un martín pescador al acecho",
+"un lince ibérico entre matorrales","un búho real entre ramas"
+],
+scenes:[
+"junto a un río al amanecer","en un claro del bosque",
+"entre hierbas altas","sobre una roca húmeda",
+"en un humedal tranquilo","bajo lluvia fina",
+"entre hojas otoñales","en una pradera nevada",
+"cerca de una madriguera","entre ramas con flores"
+],
+style:"Documental de fauna respetuoso, anatomía correcta, comportamiento natural y entorno sin artificios."
+},
+{
+name:"Macro y microtexturas",
+subjects:[
+"la superficie de un ala de mariposa","cristales de sal marina",
+"una gota sobre una hoja","la corteza agrietada de un árbol"
+],
+scenes:[
+"a escala extrema con fondo abstracto","sobre una lámina negra",
+"con gotas como elementos secundarios","junto a una fibra textil",
+"con luz atravesando el material","sobre una superficie mineral",
+"con polvo fino visible","en un entorno de laboratorio",
+"con patrones geométricos naturales","sobre una lámina translúcida"
+],
+style:"Macro de precisión, detalle microscópico, enfoque selectivo y textura auténtica sin halos digitales."
+},
+{
+name:"Deporte y acción",
+subjects:[
+"una corredora cruzando la meta","un ciclista descendiendo una curva",
+"una jugadora de baloncesto saltando","un surfista dentro de una ola"
+],
+scenes:[
+"en el instante decisivo","durante una competición",
+"en una instalación exterior","con gotas congeladas en el aire",
+"en una pista vacía","bajo lluvia intensa",
+"con público desenfocado","al atardecer",
+"en una superficie polvorienta","en un entrenamiento nocturno"
+],
+style:"Fotografía deportiva intensa, anatomía creíble, movimiento legible y composición dinámica."
+},
+{
+name:"Fotografía callejera",
+subjects:[
+"un vendedor de flores abriendo su puesto","un ciclista bajo una marquesina",
+"un músico junto a una pared azul","un tranvía atravesando una plaza"
+],
+scenes:[
+"en una calle estrecha de Lisboa","en una avenida lluviosa de Tokio",
+"en un barrio antiguo al amanecer","en un cruce a mediodía",
+"en una plaza a la hora azul","en un mercado cubierto",
+"junto a un paso subterráneo","en un barrio portuario",
+"bajo carteles luminosos","en una calle de adoquines mojados"
+],
+style:"Fotografía callejera observacional, capas urbanas, momento espontáneo y narrativa documental."
+},
+{
+name:"Viajes y culturas",
+subjects:[
+"un mercado de especias","barcas de pesca regresando al puerto",
+"un taller de cerámica tradicional","un tren regional atravesando arrozales"
+],
+scenes:[
+"durante la primera hora del día","en un lugar sin escenografía turística",
+"durante una actividad cotidiana","en una calle de montaña",
+"junto a campos cultivados","en una plaza de pueblo",
+"en un puerto pequeño","en un patio tradicional",
+"en una estación rural","durante una celebración comunitaria"
+],
+style:"Reportaje de viaje respetuoso, contexto local, detalles cotidianos y color documental natural."
+},
+{
+name:"Fotografía nocturna",
+subjects:[
+"un observatorio bajo la Vía Láctea","un puente urbano iluminado",
+"una gasolinera solitaria","rascacielos junto a un canal"
+],
+scenes:[
+"en una noche sin luna","tras la lluvia",
+"durante la hora azul tardía","con niebla entre edificios",
+"en una carretera vacía","bajo un cielo estrellado",
+"junto a un puerto industrial","en una feria iluminada",
+"con reflejos en pavimento","en una estación casi desierta"
+],
+style:"Fotografía nocturna limpia, altas luces controladas, sombras con detalle y color ambiental equilibrado."
+},
+{
+name:"Blanco y negro",
+subjects:[
+"un rostro con arrugas expresivas","una escalera de incendios",
+"las manos de un artesano","un árbol solitario sobre nieve"
+],
+scenes:[
+"con fondo de tonos medios","en un espacio de alto contraste",
+"con líneas que conducen al sujeto","en un instante silencioso",
+"junto a una ventana","bajo una marquesina",
+"en una estación vacía","en un taller antiguo",
+"contra una pared texturizada","entre sombras geométricas"
+],
+style:"Blanco y negro atemporal, separación tonal rica, textura orgánica y negros con detalle."
+},
+{
+name:"Surrealismo conceptual",
+subjects:[
+"una escalera que termina en un espejo suspendido",
+"una esfera de vidrio sobre arena negra",
+"una puerta aislada en mitad de un lago",
+"un reloj cubierto de musgo"
+],
+scenes:[
+"en una habitación inundada","en un paisaje sin horizonte",
+"en un invernadero onírico","sobre un escenario monocromo",
+"en un desierto de niebla","dentro de una estructura imposible",
+"junto a una sombra desproporcionada","sobre una plataforma flotante",
+"en un corredor infinito","en un jardín de proporciones extrañas"
+],
+style:"Surrealismo fotográfico con metáfora visual clara, perspectiva coherente y acabado fotorrealista."
+},
+{
+name:"Automoción",
+subjects:[
+"un coupé eléctrico de líneas fluidas","una motocicleta clásica restaurada",
+"un todoterreno cubierto de polvo","un descapotable vintage"
+],
+scenes:[
+"en un túnel de hormigón","en una carretera costera",
+"en un estudio negro reflectante","junto a un hangar industrial",
+"en un aparcamiento a la hora azul","en una curva de montaña",
+"bajo lluvia urbana","en una estación de servicio retro",
+"en una explanada desértica","junto a un edificio moderno"
+],
+style:"Campaña automotriz premium, reflejos controlados, carrocería detallada y perspectiva comercial precisa."
+},
+{
+name:"Bodas y celebraciones",
+subjects:[
+"una pareja intercambiando votos","unas manos ajustando un anillo",
+"una abuela abrazando a la novia","un baile espontáneo al final de la fiesta"
+],
+scenes:[
+"en un jardín histórico","en una nave industrial con velas",
+"en una finca mediterránea","junto al mar",
+"en una casa familiar luminosa","bajo árboles centenarios",
+"en un patio de piedra","en una celebración íntima",
+"durante un brindis","bajo luces festivas"
+],
+style:"Reportaje de celebración emotivo, momentos naturales, piel realista y composición elegante sin rigidez."
+},
+{
+name:"Familia e infancia",
+subjects:[
+"hermanos construyendo una torre de bloques","una familia preparando galletas",
+"un niño persiguiendo pompas de jabón","tres generaciones en un sofá"
+],
+scenes:[
+"en un hogar vivido","en un parque al atardecer",
+"sobre una manta en el jardín","en una cocina luminosa",
+"durante un paseo por el bosque","junto a una ventana",
+"en una biblioteca infantil","en una playa tranquila",
+"durante un juego creativo","en un patio familiar"
+],
+style:"Fotografía familiar auténtica, expresiones espontáneas, encuadre cercano y colores suaves."
+},
+{
+name:"Bodegones y objetos",
+subjects:[
+"una colección de llaves antiguas","libros usados con notas manuscritas",
+"herramientas de carpintería","flores secas en un jarrón irregular"
+],
+scenes:[
+"sobre una mesa de nogal","en un alféizar de piedra",
+"contra lino oscuro","en una composición cenital",
+"sobre papel artesanal","junto a una pared envejecida",
+"en una bandeja de cobre","sobre una tela de algodón",
+"junto a una ventana norte","sobre una base de cerámica"
+],
+style:"Bodegón artístico, equilibrio formal, paleta limitada y estudio de texturas y formas."
+},
+{
+name:"Industria y oficios",
+subjects:[
+"una soldadora trabajando en un taller","un relojero ajustando un mecanismo",
+"una alfarera torneando arcilla","un carpintero ensamblando madera"
+],
+scenes:[
+"en su espacio real de trabajo","con herramientas en primer plano",
+"durante una tarea minuciosa","en un taller con huellas de uso",
+"junto a maquinaria industrial","bajo luz de una ventana",
+"en una nave metálica","entre piezas en construcción",
+"con partículas de polvo visibles","durante una pausa de trabajo"
+],
+style:"Reportaje profesional de oficios, manos creíbles, materiales auténticos y dignidad documental."
+},
+{
+name:"Fotografía científica",
+subjects:[
+"un cristal mineral bajo microscopio","un corte transversal de una roca",
+"una muestra de tejido vegetal","un experimento de tensión superficial"
+],
+scenes:[
+"en un laboratorio ordenado","sobre una mesa de análisis",
+"junto a una escala de referencia","en una sala de instrumentación",
+"con fondo técnico neutro","bajo iluminación transmitida",
+"en una cámara de pruebas","junto a instrumentos de precisión",
+"en un entorno de investigación","sobre una lámina transparente"
+],
+style:"Documentación científica precisa, escala coherente, color fiel y ausencia de detalles inventados."
+},
+{
+name:"Fotografía histórica",
+subjects:[
+"una máquina de escribir mecánica","un tranvía de principios del siglo XX",
+"una cámara de fuelle antigua","un mercado inspirado en los años cincuenta"
+],
+scenes:[
+"en una calle empedrada","dentro de una estación histórica",
+"en un estudio de época","junto a una fachada antigua",
+"en un café con mobiliario vintage","en un taller de restauración",
+"bajo farolas clásicas","en un patio de piedra",
+"en una tienda de antigüedades","en una plaza con arquitectura histórica"
+],
+style:"Fotografía de inspiración histórica, vestuario y utilería coherentes, textura analógica y composición verosímil."
+},
+{
+name:"Fotografía submarina",
+subjects:[
+"una tortuga marina sobre un arrecife","un banco de peces plateados",
+"una medusa translúcida","un bosque submarino de algas"
+],
+scenes:[
+"en aguas tropicales claras","cerca de una pared coralina",
+"en una cueva marina","bajo un haz de luz solar",
+"en aguas azules profundas","sobre arena ondulada",
+"junto a rocas volcánicas","entre columnas de burbujas",
+"en un ecosistema de kelp","cerca de la superficie del océano"
+],
+style:"Fotografía submarina realista, dispersión de luz acuática, fauna natural y detalle sin colores artificiales."
+},
+{
+name:"Fotografía aérea",
+subjects:[
+"un delta con canales ramificados","campos agrícolas geométricos",
+"un pueblo junto a un acantilado","una carretera serpenteante"
+],
+scenes:[
+"desde una vista cenital","con luz rasante al amanecer",
+"después de una lluvia ligera","durante la estación seca",
+"con sombras largas","bajo una capa de nubes",
+"en un paisaje costero","entre parcelas multicolores",
+"sobre un bosque de coníferas","junto a un río sinuoso"
+],
+style:"Fotografía aérea profesional, patrones legibles, escala espacial coherente y composición gráfica."
+}
+];
+
+const lighting = [
+"iluminación lateral suave que revela volumen",
+"contraluz controlado con bordes luminosos",
+"luz difusa de cielo cubierto",
+"luz rasante que enfatiza las texturas",
+"iluminación de estudio con sombras precisas",
+"luz ambiental natural y exposición equilibrada",
+"fuente cenital amplia con contraste moderado",
+"luz cálida de tarde con sombras largas"
+];
+
+const composition = [
+"composición simétrica y líneas controladas",
+"regla de tercios con espacio negativo",
+"encuadre cerrado centrado en los detalles",
+"perspectiva baja con presencia visual",
+"capas de primer plano, sujeto y fondo",
+"composición diagonal con recorrido visual",
+"vista cenital de geometría ordenada",
+"encuadre amplio con contexto narrativo"
+];
+
+const optics = [
+"óptica de 35 mm para contexto ambiental",
+"objetivo de 50 mm con perspectiva natural",
+"teleobjetivo de 85 mm y fondo comprimido",
+"macro de alta resolución para detalle fino",
+"gran angular moderado con perspectiva controlada"
+];
+
+const finishes = [
+"color natural con contraste moderado",
+"acabado editorial de alta gama",
+"detalle nítido sin halos digitales",
+"grano analógico sutil y orgánico",
+"paleta cromática limitada y coherente"
+];
+
+const prompts = [];
+let id = 1;
+
+data.forEach((category, ci) => {
+  for (let i = 0; i < 40; i++) {
+    const subject = category.subjects[i % category.subjects.length];
+    const scene = category.scenes[Math.floor(i / category.subjects.length)];
+    const light = lighting[(i + ci) % lighting.length];
+    const comp = composition[(i * 3 + ci) % composition.length];
+    const lens = optics[(i * 2 + ci) % optics.length];
+    const finish = finishes[(i + ci * 2) % finishes.length];
+
+    prompts.push({
+      id: id++,
+      category: category.name,
+      title: subject.charAt(0).toUpperCase() + subject.slice(1),
+      prompt:
+        "Crea una fotografía profesional de " + subject + ", " + scene +
+        ". Iluminación: " + light + ". " +
+        "Composición: " + comp + ". " +
+        "Óptica: " + lens + ". " +
+        category.style + " " + finish +
+        ". Conserva proporciones creíbles, materiales auténticos y detalles naturales; " +
+        "evita artefactos, deformaciones y efectos excesivos."
+    });
+  }
+});
+
+const categories = ["Todas", ...data.map(c => c.name)];
+let active = "Todas";
+let limit = 30;
+
+const $ = id => document.getElementById(id);
+const grid = $("grid");
+
+function setupCategories() {
+  categories.forEach(name => {
+    const button = document.createElement("button");
+    button.className = "category" + (name === "Todas" ? " active" : "");
+    button.textContent = name;
+    button.type = "button";
+    button.addEventListener("click", () => {
+      active = name;
+      limit = 30;
+      document.querySelectorAll(".category").forEach(b =>
+        b.classList.toggle("active", b === button)
+      );
+      render();
+    });
+    $("categories").appendChild(button);
+  });
+}
+
+function filteredPrompts() {
+  const query = $("search").value.trim().toLocaleLowerCase("es");
+  let result = prompts.filter(p =>
+    (active === "Todas" || p.category === active) &&
+    (p.category + " " + p.title + " " + p.prompt)
+      .toLocaleLowerCase("es").includes(query)
+  );
+
+  const sort = $("sort").value;
+  if (sort === "az")
+    result.sort((a,b) => a.category.localeCompare(b.category,"es") || a.id-b.id);
+  if (sort === "za")
+    result.sort((a,b) => b.category.localeCompare(a.category,"es") || a.id-b.id);
+  return result;
+}
+
+function render() {
+  const all = filteredPrompts();
+  const shown = all.slice(0, limit);
+  grid.replaceChildren();
+
+  shown.forEach(p => {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const tag = document.createElement("div");
+    tag.className = "tag";
+    tag.textContent = "#" + String(p.id).padStart(4,"0") + " · " + p.category;
+
+    const title = document.createElement("h2");
+    title.textContent = p.title;
+
+    const text = document.createElement("p");
+    text.className = "prompt";
+    text.textContent = p.prompt;
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const copy = document.createElement("button");
+    copy.className = "action primary";
+    copy.textContent = "Copiar prompt";
+    copy.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(p.prompt);
+      } catch {
+        const area = document.createElement("textarea");
+        area.value = p.prompt;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+      }
+      copy.textContent = "¡Copiado!";
+      setTimeout(() => copy.textContent = "Copiar prompt", 1300);
+    });
+
+    const view = document.createElement("button");
+    view.className = "action";
+    view.textContent = "Ocultar texto";
+    view.addEventListener("click", () => {
+      text.hidden = !text.hidden;
+      view.textContent = text.hidden ? "Ver prompt" : "Ocultar texto";
+    });
+
+    actions.append(copy, view);
+    card.append(tag, title, text, actions);
+    grid.appendChild(card);
+  });
+
+  $("count").textContent =
+    "Mostrando " + shown.length + " de " + all.length +
+    " resultados · " + prompts.length + " en total";
+
+  $("empty").style.display = all.length ? "none" : "block";
+  $("more").style.display = shown.length < all.length ? "inline-block" : "none";
+}
+
+$("search").addEventListener("input", () => {
+  limit = 30;
+  render();
+});
+$("sort").addEventListener("change", render);
+$("more").addEventListener("click", () => {
+  limit += 30;
+  render();
+});
+
+$("export").addEventListener("click", () => {
+  const text = filteredPrompts().map(p =>
+    p.id + ". [" + p.category + "] " + p.title + "\n" + p.prompt
+  ).join("\n\n");
+
+  const blob = new Blob(["\uFEFF" + text], {
+    type: "text/plain;charset=utf-8"
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "fotoprompt-studio.txt";
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
+$("total").textContent = prompts.length;
+setupCategories();
+render();
+</script>
+</body>
+</html>
